@@ -7,17 +7,20 @@ using namespace std;
 %}
 
 %%
-":"             { cout << "Colon" << endl; return COLON; }
-","             { return COMMA; }
-"["             { return LSQUARE; }
-"]"             { return RSQUARE; }
-"{"             { return LBRACE; }
-"}"             { return RBRACE; }
-"("		{ return LPAREN; }
-")"		{ return RPAREN; }
-[0-9]+\.[0-9]+	{ yylval.number=atoi(yytext); return DOUBLE; }
-[0-9]+          { yylval.number=atoi(yytext); return INTEGER; }
-["][^"]*["]      { yylval.string=strdup(yytext); return STRING; }
+":"             	{ cout << "Colon" << endl; return COLON; }
+","             	{ return COMMA; }
+"["             	{ return LSQUARE; }
+"]"             	{ return RSQUARE; }
+"{"             	{ return LBRACE; }
+"}"             	{ return RBRACE; }
+"("			{ return LPAREN; }
+")"			{ return RPAREN; }
+[0-9]+\.[0-9]+		{ yylval.number=atoi(yytext); return DOUBLE; }
+[0-9]+          	{ yylval.number=atoi(yytext); return INTEGER; }
+["][^"]*["]     	{ yylval.string=strdup(yytext); return STRING; }
+[a-zA-Z][a-zA-Z0-9]* 	{  }
+\n			{ linenum++; }
+[ \t]			;
 %%
 
 
