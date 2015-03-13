@@ -1,19 +1,20 @@
 %code requires{
-  #include <iostream>
-  #include <stdio.h>
+	#include <iostream>
+	#include <stdio.h>
   
- // #include "ast.hpp"
+	// #include "ast.hpp"
   
   
-  //extern Value *g_ast; // A way of getting the AST out
+	//extern Value *g_ast; // A way of getting the AST out
   
-  //! This is to fix problems when generating C++
-  int yylex(void);
-  void yyerror(const char *);
+	//! This is to fix problems when generating C++
+	int yylex();
+	void yyerror(const char *);
+	
 }
 
 %{
-using namespace std;
+	using namespace std;
 %}
 
 %union
@@ -24,24 +25,38 @@ using namespace std;
 	long long_t;
 	double double_t;
 	void* ptr_t;
-  	std::string string_t;
+  	const char* string_t;
 }
-%token ASSIGN ADD MULT SUB DIV 
-%token COLON COMMA SEMICOLON EOL
+
+%token COLON COMMA EOL
 %token LSQUARE RSQUARE LBRACE RBRACE LPAREN RPAREN
-%token INTEGER DOUBLE STRING TYPE ID
+%token ADD SUB MUL DIV MODULO
+%token EQUAL_TO NOT_EQUAL_TO BITWISE_OR LOGICAL_OR BITWISE_AND LOGICAL_AND BITWISE_XOR TERNARY
+%token ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN BITWISE_OR_ASSIGN BITWISE_AND_ASSIGN BITWISE_XOR_ASSIGN MODULO_ASSIGN
+%token <int_t> INTEGER 
+%token <double_t> DOUBLE 
+%token <string_t> STRING TYPE ID
 
-%type <number> 
-
-%start NUM
+%start number
 
 %{
-struct pair_t* root=0;
-
+	struct pair_t* root=0;
 %}
 
 %%
 
-NUM	: NUMBER {std::cout << "Num found: " << $1 << std::endl; }
+number	: DOUBLE {std::cout << "Num found: " << $1 << std::endl; }
+		| INTEGER {std::cout << "Num found: " << $1 << std::endl; }
 
 %%
+int main() 
+{	
+	int y = 0;
+
+	do
+	{	
+		y = yyparse();
+		cout << y;
+	}
+    while(y);
+}
