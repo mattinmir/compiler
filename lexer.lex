@@ -7,6 +7,40 @@ int linenum = 0;
 %}
 
 %%
+
+"auto"			{ return(AUTO); }
+"break"			{ return(BREAK); }
+"case"			{ return(CASE); }
+"char"			{ return(CHAR); }
+"const"			{ return(CONST); }
+"continue"		{ return(CONTINUE); }
+"default"		{ return(DEFAULT); }
+"do"			{ return(DO); }
+"double"		{ return(DOUBLE); }
+"else"			{ return(ELSE); }
+"enum"			{ return(ENUM); }
+"extern"		{ return(EXTERN); }
+"float"			{ return(FLOAT); }
+"for"			{ return(FOR); }
+"goto"			{ return(GOTO); }
+"if"			{ return(IF); }
+"int"			{ return(INT); }
+"long"			{ return(LONG); }
+"register"		{ return(REGISTER); }
+"return"		{ return(RETURN); }
+"short"			{ return(SHORT); }
+"signed"		{ return(SIGNED); }
+"sizeof"		{ return(SIZEOF); }
+"static"		{ return(STATIC); }
+"struct"		{ return(STRUCT); }
+"switch"		{ return(SWITCH); }
+"typedef"		{ return(TYPEDEF); }
+"union"			{ return(UNION); }
+"unsigned"		{ return(UNSIGNED); }
+"void"			{ return(VOID); }
+"volatile"		{ return(VOLATILE); }
+"while"			{ return(WHILE); }
+
 ":"             		{ return COLON; }
 ","             		{ return COMMA; }
 ";"             		{ return EOL; }
@@ -44,10 +78,10 @@ int linenum = 0;
 "^="					{ return(BITWISE_XOR_ASSIGN); }
 "|="					{ return(BITWISE_OR_ASSIGN); }
 
-[0-9]+\.[0-9]+			{ yylval.double_t=atoi(yytext); return DOUBLE; }
-[0-9]+          		{ yylval.int_t=atoi(yytext); return INTEGER; }
-["][^"]*["]     		{ yylval.string_t=strdup(yytext); return STRING; }
-[a-zA-Z][a-zA-Z0-9]* 	{ return ID; }
+[0-9]+\.[0-9]+			{ yylval.double_t=atoi(yytext); return DOUBLE_VAL; }
+[0-9]+          		{ yylval.int_t=atoi(yytext); return INT_VAL; }
+["][^"]*["]     		{ return STRING_VAL; }
+[_a-zA-Z][_a-zA-Z0-9]* 	{ return ID; }
 \n						{linenum++;}
 [ \t]					;
 %%

@@ -1,7 +1,10 @@
 %code requires{
+	
+
 	#include <iostream>
 	#include <stdio.h>
-  
+	#include <cstring>
+	
 	// #include "ast.hpp"
   
   
@@ -25,19 +28,32 @@
 	long long_t;
 	double double_t;
 	void* ptr_t;
-  	const char* string_t;
+  	char* string_t;
 }
 
-%token COLON COMMA EOL
-%token LSQUARE RSQUARE LBRACE RBRACE LPAREN RPAREN
-%token ADD SUB MUL DIV MODULO
-%token EQUAL_TO NOT_EQUAL_TO BITWISE_OR LOGICAL_OR BITWISE_AND LOGICAL_AND BITWISE_XOR TERNARY
-%token ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN BITWISE_OR_ASSIGN BITWISE_AND_ASSIGN BITWISE_XOR_ASSIGN MODULO_ASSIGN
-%token <int_t> INTEGER 
-%token <double_t> DOUBLE 
-%token <string_t> STRING TYPE ID
+%token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INT 
+%token LONG REGISTER RETURN SHORT SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED 
+%token VOID VOLATILE WHILE
 
-%start number
+%token COLON COMMA EOL
+
+%token LSQUARE RSQUARE LBRACE RBRACE LPAREN RPAREN
+
+%token ADD SUB MUL DIV MODULO
+
+%token EQUAL_TO NOT_EQUAL_TO BITWISE_OR LOGICAL_OR BITWISE_AND LOGICAL_AND BITWISE_XOR TERNARY
+
+%token ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN BITWISE_OR_ASSIGN BITWISE_AND_ASSIGN 
+%token BITWISE_XOR_ASSIGN MODULO_ASSIGN
+
+%token <int_t> INT_VAL 
+%token <double_t> DOUBLE_VAL 
+%token <string_t> STRING_VAL ID
+
+
+%type <string_t> type type_qualifier INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED
+
+%start function
 
 %{
 	struct pair_t* root=0;
@@ -45,12 +61,26 @@
 
 %%
 
-number	: DOUBLE {std::cout << "Num found: " << $1 << std::endl; }
-		| INTEGER {std::cout << "Num found: " << $1 << std::endl; }
 
+
+function	: type ID LPAREN RPAREN LBRACE RBRACE {cout << $2 << endl;}
+			;
+
+type		: INT
+			| FLOAT
+			| DOUBLE
+			| CHAR
+			| type_qualifier type {char str[80]; strcpy(str, $1); strcpy(str, " "); strcpy(str, $2);  $$ = str;}
+			;
+
+type_qualifier	: LONG 
+				| SHORT
+				| UNSIGNED
+				;
 %%
 int main() 
 {	
+	yydebug = 1;
 	int y = 0;
 
 	do
