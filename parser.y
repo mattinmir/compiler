@@ -6,7 +6,7 @@
 	#include <cstring>
 	
 	// #include "ast.hpp"
-  
+  	//#define YYDEBUG 0
   
 	//extern Value *g_ast; // A way of getting the AST out
   
@@ -41,7 +41,7 @@
 
 %token ADD SUB MUL DIV MODULO
 
-%token EQUAL_TO NOT_EQUAL_TO BITWISE_OR LOGICAL_OR BITWISE_AND LOGICAL_AND BITWISE_XOR TERNARY
+%token EQUAL_TO NOT_EQUAL_TO LOGICAL_NOT BITWISE_NOT BITWISE_OR LOGICAL_OR BITWISE_AND LOGICAL_AND BITWISE_XOR TERNARY
 
 %token ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN BITWISE_OR_ASSIGN BITWISE_AND_ASSIGN 
 %token BITWISE_XOR_ASSIGN MODULO_ASSIGN
@@ -61,26 +61,28 @@
 
 %%
 
+expr	: expr op expr
+	
 
 
 function	: type ID LPAREN RPAREN LBRACE RBRACE {cout << $2 << endl;}
-			;
+		;
 
 type		: INT
-			| FLOAT
-			| DOUBLE
-			| CHAR
-			| type_qualifier type {char str[80]; strcpy(str, $1); strcpy(str, " "); strcpy(str, $2);  $$ = str;}
-			;
+		| FLOAT
+		| DOUBLE
+		| CHAR
+		| type_qualifier type {char str[80]; strcpy(str, $1); strcpy(str, " "); strcpy(str, $2);  $$ = str;}
+		;
 
 type_qualifier	: LONG 
-				| SHORT
-				| UNSIGNED
-				;
+		| SHORT
+		| UNSIGNED
+		;
 %%
 int main() 
 {	
-	yydebug = 1;
+	//yydebug = 1;
 	int y = 0;
 
 	do

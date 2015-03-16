@@ -41,49 +41,51 @@ int linenum = 0;
 "volatile"		{ return(VOLATILE); }
 "while"			{ return(WHILE); }
 
-":"             		{ return COLON; }
-","             		{ return COMMA; }
-";"             		{ return EOL; }
+":"             	{ return COLON; }
+","             	{ return COMMA; }
+";"             	{ return EOL; }
 
-"["             		{ return LSQUARE; }
-"]"             		{ return RSQUARE; }
-"{"             		{ return LBRACE; }
-"}"             		{ return RBRACE; }
-"("						{ return LPAREN; }
-")"						{ return RPAREN; }
+"["            		{ return LSQUARE; }
+"]"            		{ return RSQUARE; }
+"{"            		{ return LBRACE; }
+"}"            		{ return RBRACE; }
+"("			{ return LPAREN; }
+")"			{ return RPAREN; }
 
-"+"						{ return ADD; }
-"-"						{ return SUB; }
-"*"						{ return MUL; }
-"/"						{ return DIV; }
-"%"						{ return(MODULO); }
+"+"			{ return ADD; }
+"-"			{ return SUB; }
+"*"			{ return MUL; }
+"/"			{ return DIV; }
+"%"			{ return(MODULO); }
 
-"=="					{ return EQUAL_TO; }
-"!="					{ return NOT_EQUAL_TO; }
-"|"						{ return BITWISE_OR; }
-"||"					{ return LOGICAL_OR; }
-"&"						{ return BITWISE_AND; }
-"&&"					{ return LOGICAL_AND; }
-"^"						{ return BITWISE_XOR; }
-"?"						{ return TERNARY;}
+"=="			{ return EQUAL_TO; }
+"!="			{ return NOT_EQUAL_TO; }
+"!"			{ return LOGICAL_NOT; }
+"~"			{ return BITWISE_NOT; }
+"|"			{ return BITWISE_OR; }
+"||"			{ return LOGICAL_OR; }
+"&"			{ return BITWISE_AND; }
+"&&"			{ return LOGICAL_AND; }
+"^"			{ return BITWISE_XOR; }
+"?"			{ return TERNARY;}
 
 
-"="						{ return ASSIGN; }
-"+="					{ return ADD_ASSIGN; }
-"-="					{ return SUB_ASSIGN; }
-"*="					{ return MUL_ASSIGN; }
-"/="					{ return DIV_ASSIGN; }
-"%="					{ return(MODULO_ASSIGN); }
-"&="					{ return(BITWISE_AND_ASSIGN); }
-"^="					{ return(BITWISE_XOR_ASSIGN); }
-"|="					{ return(BITWISE_OR_ASSIGN); }
+"="			{ return ASSIGN; }
+"+="			{ return ADD_ASSIGN; }
+"-="			{ return SUB_ASSIGN; }
+"*="			{ return MUL_ASSIGN; }
+"/="			{ return DIV_ASSIGN; }
+"%="			{ return(MODULO_ASSIGN); }
+"&="			{ return(BITWISE_AND_ASSIGN); }
+"^="			{ return(BITWISE_XOR_ASSIGN); }
+"|="			{ return(BITWISE_OR_ASSIGN); }
 
-[0-9]+\.[0-9]+			{ yylval.double_t=atoi(yytext); return DOUBLE_VAL; }
-[0-9]+          		{ yylval.int_t=atoi(yytext); return INT_VAL; }
-["][^"]*["]     		{ return STRING_VAL; }
+[0-9]+\.[0-9]+		{ yylval.double_t=atoi(yytext); return DOUBLE_VAL; }
+[0-9]+          	{ yylval.int_t=atoi(yytext); return INT_VAL; }
+["][^"]*["]     	{ return STRING_VAL; }
 [_a-zA-Z][_a-zA-Z0-9]* 	{ return ID; }
-\n						{linenum++;}
-[ \t]					;
+\n			{linenum++;}
+[ \t]			;
 %%
 
 
