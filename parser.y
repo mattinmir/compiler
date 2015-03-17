@@ -166,7 +166,8 @@ selection_stmt		: IF LPAREN simple_expression RPAREN statement %prec "else"
 			| IF LPAREN simple_expression RPAREN statement ELSE statement
 			;
 
-iteration_stmt		: WHILE LPAREN simple_expression RPAREN statement // TODO: for
+iteration_stmt		: WHILE LPAREN simple_expression RPAREN statement 
+			//| FOR LPAREN var_declaration EOL expression EOL expression RPAREN statement
 			;
 
 return_stmt		: RETURN EOL
@@ -179,7 +180,7 @@ break_stmt		: BREAK EOL
 expression		: mutable ASSIGN expression
 			| mutable ADD_ASSIGN expression
 			| mutable SUB_ASSIGN expression
-			//| mutable MULT expression 
+			| mutable MUL_ASSIGN expression 
 			| mutable DIV_ASSIGN expression
 			| mutable BITWISE_AND_ASSIGN expression
 			| mutable BITWISE_OR_ASSIGN expression

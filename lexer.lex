@@ -9,6 +9,7 @@ int linenum = 0;
 %%
 
 "auto"			{ return AUTO; }
+"bool"			{ return BOOL; }
 "break"			{ return BREAK; }
 "case"			{ return CASE; }
 "char"			{ return CHAR; }
