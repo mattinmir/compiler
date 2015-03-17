@@ -6,7 +6,7 @@
 	#include <cstring>
 	
 	// #include "ast.hpp"
-  	//#define YYDEBUG 0
+  	//#define YYDEBUG 1
   	using namespace std;
 	//extern Value *g_ast; // A way of getting the AST out
   
@@ -28,9 +28,7 @@
   	char* string_t;
 }
 
-%token AUTO BREAK BOOL CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM EXTERN FLOAT FOR GOTO IF INT 
-%token LONG REGISTER RETURN SHORT SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED 
-%token VOID VOLATILE WHILE
+%token SHORT DOUBLE BOOL WHILE LONG FLOAT BREAK UNSIGNED ELSE RETURN CHAR INT IF
 
 %token COLON COMMA EOL
 
@@ -73,22 +71,22 @@ declaration		: var_declaration
 			| fun_declaration
 			;
 
-var_declaration		: type_specifier var_decl_list ';'
+var_declaration		: type_specifier var_decl_list EOL
 			;
 
-scoped_var_declaration	: scoped_type_specifier var_decl_list ';'
+scoped_var_declaration	: scoped_type_specifier var_decl_list EOL
 			;
 
-var_decl_list		: var_decl_list ',' var_decl_initialise
+var_decl_list		: var_decl_list COMMA var_decl_initialise
 			| var_decl_initialise
 			;
 
 var_decl_initialise	: var_decl_id
-			| var_decl_id ':' simple_expression
+			| var_decl_id COLON simple_expression
 			;
 
 var_decl_id		: ID
-			| ID '[' INT_VAL ']'
+			| ID LSQUARE INT_VAL RSQUARE
 			;
 
 scoped_type_specifier	: type_specifier
@@ -101,27 +99,27 @@ type_specifier		: INT
 			| BOOL
 			;
 
-fun_declaration		: type_specifier ID '(' params ')' 
-			| ID '(' params ')' statement
+fun_declaration		: type_specifier ID LPAREN params RPAREN 
+			| ID LPAREN params RPAREN statement
 			;
 
 params			: /*Empty*/
 			| param_list
 			;
 
-param_list		: param_list ';' param_type_list
+param_list		: param_list EOL param_type_list
 			| param_type_list
 			;
 
 param_type_list		: type_specifier param_id_list
 			;
 
-param_id_list		: param_id_list ',' param_id
+param_id_list		: param_id_list COMMA param_id
 			| param_id
 			;
 
 param_id		: ID
-			| ID '[' ']'
+			| ID LSQUARE RSQUARE
 			;
 
 statement		: expression_stmt
@@ -132,7 +130,7 @@ statement		: expression_stmt
 			| break_stmt
 			;
 
-compound_stmt		: '{' local_declarations statement_list '}' // int x; float y; ... statements
+compound_stmt		: LBRACE local_declarations statement_list RBRACE // int x; float y; ... statements
 			;
 
 local_declarations	: /*Empty*/
@@ -143,22 +141,22 @@ statement_list		: /*Empty*/
 			| statement_list statement
 			;
 
-expression_stmt		: expression ';'
-			| ';'
+expression_stmt		: expression EOL
+			| EOL
 			;
 
-selection_stmt		: IF '(' simple_expression ')' statement
-			| IF '(' simple_expression ')' statement ELSE statement
+selection_stmt		: IF LPAREN simple_expression RPAREN statement
+			| IF LPAREN simple_expression RPAREN statement ELSE statement
 			;
 
-iteration_stmt		: WHILE '(' simple_expression ')' statement // TODO: for
+iteration_stmt		: WHILE LPAREN simple_expression RPAREN statement // TODO: for
 			;
 
-return_stmt		: RETURN ';'
-			| RETURN expression ';'
+return_stmt		: RETURN EOL
+			| RETURN expression EOL
 			;
 
-break_stmt		: BREAK ';'
+break_stmt		: BREAK EOL
 			;
 
 expression		: mutable '=' expression
@@ -227,22 +225,22 @@ factor			: immutable
 			;
 
 mutable			: ID 
-			| ID '[' expression ']'
+			| ID LSQUARE expression RSQUARE
 			;
 
-immutable		: '(' expression ')' 
+immutable		: LPAREN expression RPAREN 
 			| call 
 			| constant
 			;
 
-call			: ID '(' args ')'
+call			: ID LPAREN args RPAREN
 			;
 
 args			: /*Empty*/
 			| arg_list
 			;
 
-arg_list		: arg_list ',' expression
+arg_list		: arg_list COMMA expression
 			| expression
 			;
 
