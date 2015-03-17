@@ -63,8 +63,9 @@ var_decl_list		: var_decl_list COMMA var_decl_initialise
 			| var_decl_initialise
 			;
 
-var_decl_initialise	:  var_decl_id
-					;
+var_decl_initialise	: var_decl_id ASSIGN simple_expression
+			| var_decl_id
+			;
 
 var_decl_id		: ID
 			| ID LSQUARE INT_VAL RSQUARE
