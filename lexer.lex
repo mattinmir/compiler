@@ -41,6 +41,7 @@ int linenum = 0;
 "volatile"		{ return VOLATILE; }
 "while"			{ return WHILE; }
 
+"..."			{ return ELLIPSIS; }
 ":"             	{ return COLON; }
 ","             	{ return COMMA; }
 ";"             	{ return EOL; }
