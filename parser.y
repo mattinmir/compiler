@@ -22,23 +22,7 @@
   	char* string_t;
 }
 
-%token SHORT DOUBLE BOOL WHILE LONG FLOAT BREAK UNSIGNED ELSE RETURN CHAR INT IF
-
-%token COLON COMMA EOL
-
-%token LSQUARE RSQUARE LBRACE RBRACE LPAREN RPAREN
-
-%token ADD SUB MUL DIV MODULO
-
-%token EQUAL_TO NOT_EQUAL_TO LOGICAL_NOT BITWISE_NOT BITWISE_OR LOGICAL_OR BITWISE_AND LOGICAL_AND 
-%token BITWISE_XOR TERNARY LT_EQUAL_TO GT_EQUAL_TO
-
-%token TRUE FALSE
-
-%token ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN BITWISE_OR_ASSIGN BITWISE_AND_ASSIGN 
-%token BITWISE_XOR_ASSIGN MODULO_ASSIGN
-
-%token INCREMENT DECREMENT
+%token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
 
 %token <int_t> INT_VAL 
 %token <double_t> DOUBLE_VAL 
@@ -46,11 +30,15 @@
 %token <char_t>	CHAR_VAL
 
 %type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED
-%left '<' '>' '=' GT_EQUAL_TO LT_EQUAL_TO NOT_EQUAL_TO
-%left '+' '-' ADD_ASSIGN SUB_ASSIGN INCREMENT DECREMENT
-%left '*' '/' 
 
-%right "then" "else"
+%left LESS_THAN GREATER_THAN ASSIGN GT_EQUAL_TO LT_EQUAL_TO NOT_EQUAL_TO
+%left ADD SUB ADD_ASSIGN SUB_ASSIGN INCREMENT DECREMENT
+%left DIV MULT 
+
+%right "else" ELSE
+
+
+
 
 %%
 
@@ -65,7 +53,7 @@ declaration		: var_declaration
 			| fun_declaration
 			;
 
-var_declaration		: type_specifier var_decl_list EOL
+var_declaration		: type_specifier var_decl_list EOL 
 			;
 
 scoped_var_declaration	: scoped_type_specifier var_decl_list EOL
@@ -138,7 +126,7 @@ expression_stmt		: expression EOL
 			| EOL
 			;
 
-selection_stmt		: IF LPAREN simple_expression RPAREN statement 		%prec "then"
+selection_stmt		: IF LPAREN simple_expression RPAREN statement %prec "else"
 			| IF LPAREN simple_expression RPAREN statement ELSE statement
 			;
 
@@ -152,10 +140,10 @@ return_stmt		: RETURN EOL
 break_stmt		: BREAK EOL
 			;
 
-expression		: mutable '=' expression
+expression		: mutable ASSIGN expression
 			| mutable ADD_ASSIGN expression
 			| mutable SUB_ASSIGN expression
-			| mutable '*' expression
+			//| mutable MULT expression 
 			| mutable DIV_ASSIGN expression
 			| mutable BITWISE_AND_ASSIGN expression
 			| mutable BITWISE_OR_ASSIGN expression
@@ -172,7 +160,7 @@ and_expression		: and_expression LOGICAL_AND unary_rel_expression
 			| unary_rel_expression
 			;
 
-unary_rel_expression	: '!' unary_rel_expression
+unary_rel_expression	: LOGICAL_NOT unary_rel_expression
 			| rel_expression
 			; 
 
@@ -181,8 +169,8 @@ rel_expression		: sum_expression relop sum_expression
 			;
 
 relop			: LT_EQUAL_TO
-			| '<'
-			| '>'
+			| LESS_THAN
+			| GREATER_THAN
 			| GT_EQUAL_TO
 			| EQUAL_TO
 			| NOT_EQUAL_TO
@@ -192,25 +180,25 @@ sum_expression		: sum_expression sumop term
 			| term
 			;
 
-sumop			: '+' 
-			| '-'
+sumop			: ADD 
+			| SUB
 			;
 
 term			: term mulop unary_expression
 			| unary_expression
 			;
 
-mulop			: '*'
-			| '/'
-			| '%'
+mulop			: MULT
+			| DIV
+			| MODULO
 			;
 
 unary_expression	: unaryop unary_expression
 			| factor
 			;
 
-unaryop			: '-' 
-			| '*'
+unaryop			: SUB 
+			| MULT
 			;
 
 factor			: immutable

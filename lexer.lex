@@ -56,8 +56,13 @@ int linenum = 0;
 "-"			{ return SUB; }
 "*"			{ return MUL; }
 "/"			{ return DIV; }
-"%"			{ return(MODULO); }
+"%"			{ return MODULO; }
 
+
+"<"			{ return LESS_THAN; }
+">"			{ return GREATER_THAN; }
+"<="			{ return LT_EQUAL_TO; }
+">="			{ return GT_EQUAL_TO; }
 "=="			{ return EQUAL_TO; }
 "!="			{ return NOT_EQUAL_TO; }
 "!"			{ return LOGICAL_NOT; }
