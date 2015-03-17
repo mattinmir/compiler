@@ -1,21 +1,15 @@
-%{
-	
-
-	#include <iostream>
+%{	
 	#include <cstdio>
-	#include <cstring>
+	#include <iostream>
 	
 	// #include "ast.hpp"
   	//#define YYDEBUG 1
   	using namespace std;
 	//extern Value *g_ast; // A way of getting the AST out
-  
-	//! This is to fix problems when generating C++
 	int yylex();
 	void yyerror(const char *);
 	
 %}
-
 
 %union{
 
@@ -81,9 +75,8 @@ var_decl_list		: var_decl_list COMMA var_decl_initialise
 			| var_decl_initialise
 			;
 
-var_decl_initialise	: var_decl_id
-			| var_decl_id COLON simple_expression
-			;
+var_decl_initialise	:  var_decl_id
+					;
 
 var_decl_id		: ID
 			| ID LSQUARE INT_VAL RSQUARE
@@ -99,7 +92,7 @@ type_specifier		: INT
 			| BOOL
 			;
 
-fun_declaration		: type_specifier ID LPAREN params RPAREN 
+fun_declaration		: type_specifier ID LPAREN params RPAREN statement
 			| ID LPAREN params RPAREN statement
 			;
 
@@ -145,7 +138,7 @@ expression_stmt		: expression EOL
 			| EOL
 			;
 
-selection_stmt		: IF LPAREN simple_expression RPAREN statement
+selection_stmt		: IF LPAREN simple_expression RPAREN statement 		%prec "then"
 			| IF LPAREN simple_expression RPAREN statement ELSE statement
 			;
 
@@ -172,7 +165,7 @@ expression		: mutable '=' expression
 			;
 
 simple_expression	: simple_expression LOGICAL_OR and_expression
-			| and_expression
+			| unary_rel_expression
 			;
 
 and_expression		: and_expression LOGICAL_AND unary_rel_expression
