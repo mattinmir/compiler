@@ -71,7 +71,12 @@ var_decl_id		: ID
 			| ID LSQUARE INT_VAL RSQUARE
 			;
 
-scoped_type_specifier	: type_specifier
+			// modifier_list can be empty, so this means they are optional on either side of the type_specifier
+
+			// This grammar allows any number of modifiers in a list, but the standard only allows one of
+			// each var_modifier and any number of type_qualifiers, so check for this in AST
+scoped_type_specifier	:type_specifier
+			 // | modifier_list type_specifier modifier_list 
 			;
 
 type_specifier		: INT
@@ -80,6 +85,36 @@ type_specifier		: INT
 			| CHAR
 			| BOOL
 			;
+/*
+modifier_list		:---empty---
+			| modifier_list type_qualifier
+			| modifier_list var_modifier
+			;
+ 
+type_qualifier		: CONST
+			| VOLATILE
+			;
+
+var_modifier		: sign_var_modifier
+			| length_var_modifier
+			| scope_var_modifier
+			;
+
+sign_var_modifier	: UNSIGNED
+			| SIGNED
+			;
+
+length_var_modifier	: LONG
+			| SHORT
+			;
+
+scope_var_modifier	: AUTO
+			| STATIC
+			| REGISTER
+			| EXTERN
+			;
+
+*/
 
 fun_declaration		: type_specifier ID LPAREN params RPAREN statement
 			| ID LPAREN params RPAREN statement
