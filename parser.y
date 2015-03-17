@@ -165,16 +165,16 @@ expression		: mutable '=' expression
 			;
 
 simple_expression	: simple_expression LOGICAL_OR and_expression
-			| unary_rel_expression
+			| and_expression
 			;
 
 and_expression		: and_expression LOGICAL_AND unary_rel_expression
-			| and_expression
+			| unary_rel_expression
 			;
 
 unary_rel_expression	: '!' unary_rel_expression
 			| rel_expression
-			;
+			; 
 
 rel_expression		: sum_expression relop sum_expression
 			| sum_expression
