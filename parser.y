@@ -1,4 +1,4 @@
-%{	
+%code requires{	
 	#include <cstdio>
 	#include <iostream>
 	
@@ -9,7 +9,7 @@
 	int yylex();
 	void yyerror(const char *);
 	
-%}
+}
 
 %union{
 
@@ -145,13 +145,13 @@ statement		: expression_stmt
 			| iteration_stmt
 			| return_stmt
 			| break_stmt
+			| local_declarations
 			;
 
-compound_stmt		: LBRACE local_declarations statement_list RBRACE // int x; float y; ... statements
+compound_stmt		: LBRACE statement_list RBRACE // int x; float y; ... statements
 			;
 
-local_declarations	: /*Empty*/
-			| local_declarations scoped_var_declaration
+local_declarations	: scoped_var_declaration
 			;
 
 statement_list		: /*Empty*/
