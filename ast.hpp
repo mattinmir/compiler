@@ -6,16 +6,19 @@
 #include <stdexcept>
 #include <iostream>
 
-class Object
+
+
+
+class Value
 {
 public:
-    virtual ~Object()
+    virtual ~Value()
     {}
         
     virtual void print(std::ostream& dst) const=0;
 };
 
-class Int : public Object
+class Int : public Value
 {
 private:
 	int val;
@@ -29,7 +32,7 @@ public:
 	}
 };
 
-class Double : public Object
+class Double : public Value
 {
 private:
 	double val;
@@ -43,7 +46,7 @@ public:
 	}
 };
 
-class Char : public Object
+class Char : public Value
 {
 private:
 	char val;
@@ -57,7 +60,7 @@ public:
 	}
 };
 
-class Bool : public Object
+class Bool : public Value
 {
 private:
 	bool val;
@@ -71,7 +74,7 @@ public:
 	}
 };
 
-class String : public Object
+class String : public Value
 {
 private:
 	std::string val;
@@ -120,14 +123,14 @@ public:
     }
 };
 
-class Object
+class Value
     : public Value
 {  
 private:    
     typedef std::map<std::string,Value*> map_t;
     std::map<std::string,Value*> entries;
 public:
-    Object()
+    Value()
     {}
     
     void Add(std::string name, Value *value)

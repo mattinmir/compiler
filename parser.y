@@ -2,7 +2,7 @@
 	#include <cstdio>
 	#include <iostream>
 	
-	
+	#include "Program.hpp"
 	#include "ast.hpp"
   	//#define YYDEBUG 1
   	using namespace std;
@@ -21,8 +21,10 @@
 	void* ptr_t;
   	char* string_t;
 	bool bool_t;
-	Object* object_t;
-	
+	Value* value_t;
+
+	DeclarationList* declaration_list_t;
+	Declaration* declaration_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -32,9 +34,12 @@
 %token <string_t> STRING_VAL ID
 %token <char_t>	CHAR_VAL
 
+
+%type <declaration_list_t> declaration_list
+%type <declaration_t> declaration var_declaration fun_declaration
 %type <bool_t> TRUE FALSE
 %type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED
-%type <object_t> constant number boolean
+%type <value_t> constant number boolean
 
 %left LESS_THAN GREATER_THAN ASSIGN GT_EQUAL_TO LT_EQUAL_TO NOT_EQUAL_TO
 %left ADD SUB ADD_ASSIGN SUB_ASSIGN INCREMENT DECREMENT
@@ -47,11 +52,9 @@
 
 %%
 
-program			: declaration_list
-			;
 
-declaration_list	: declaration_list declaration
-			| declaration
+declaration_list	: declaration_list declaration {$1->add_decl($2); $$ = $1 }
+			| declaration {$$ = new DeclarationList; $$->add_decl($1); }
 			;
 
 declaration		: var_declaration
