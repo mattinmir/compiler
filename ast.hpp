@@ -1,11 +1,90 @@
-#ifndef json_ast_hpp
-#define json_ast_hpp
+#ifndef AST_HPP
+#define AST_HPP
 
 #include <vector>
 #include <map>
 #include <stdexcept>
 #include <iostream>
 
+class Object
+{
+public:
+    virtual ~Object()
+    {}
+        
+    virtual void print(std::ostream& dst) const=0;
+};
+
+class Int : public Object
+{
+private:
+	int val;
+public:
+	Int(int _val) : val(_val)
+	{}
+	
+	void print(std::ostream& dst) const
+	{
+		dst << val;
+	}
+};
+
+class Double : public Object
+{
+private:
+	double val;
+public:
+	Double(double _val) : val(_val)
+	{}
+	
+	void print(std::ostream& dst) const
+	{
+		dst << val;
+	}
+};
+
+class Char : public Object
+{
+private:
+	char val;
+public:
+	Char(char _val) : val(_val)
+	{}
+	
+	void print(std::ostream& dst) const
+	{
+		dst << val;
+	}
+};
+
+class Bool : public Object
+{
+private:
+	bool val;
+public:
+	Bool(bool _val) : val(_val)
+	{}
+	
+	void print(std::ostream& dst) const
+	{
+		dst << val;
+	}
+};
+
+class String : public Object
+{
+private:
+	std::string val;
+public:
+	String(std::string _val) : val(_val)
+	{}
+	
+	void print(std::ostream& dst) const
+	{
+		dst << val;
+	}
+};
+/*
 class Value
 {
 public:
@@ -134,5 +213,5 @@ public:
         dst<<"null";
     }
 };
-
-#endif
+*/
+#endif // !AST_HPP

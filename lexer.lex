@@ -21,6 +21,7 @@ int linenum = 0;
 "else"			{ return ELSE; }
 "enum"			{ return ENUM; }
 "extern"		{ return EXTERN; }
+"false"			{ yylval.bool_t=yytext; return FALSE; }
 "float"			{ return FLOAT; }
 "for"			{ return FOR; }
 "goto"			{ return GOTO; }
@@ -35,6 +36,7 @@ int linenum = 0;
 "static"		{ return STATIC; }
 "struct"		{ return STRUCT; }
 "switch"		{ return SWITCH; }
+"true"			{ yylval.bool_t=yytext; return TRUE; }
 "typedef"		{ return TYPEDEF; }
 "union"			{ return UNION; }
 "unsigned"		{ return UNSIGNED; }
@@ -59,7 +61,6 @@ int linenum = 0;
 "*"			{ return MUL; }
 "/"			{ return DIV; }
 "%"			{ return MODULO; }
-
 
 "<"			{ return LESS_THAN; }
 ">"			{ return GREATER_THAN; }
@@ -87,10 +88,10 @@ int linenum = 0;
 "^="			{ return BITWISE_XOR_ASSIGN; }
 "|="			{ return BITWISE_OR_ASSIGN; }
 
-[0-9]+\.[0-9]+		{ yylval.double_t=atoi(yytext); return DOUBLE_VAL; } 
+[0-9]+\.[0-9]+		{ yylval.double_t=atof(yytext); return DOUBLE_VAL; } 
 [0-9]+          	{ yylval.int_t=atoi(yytext); return INT_VAL; }
-["][^"]*["]     	{ return STRING_VAL; }
-['][^']?[']		{ return CHAR_VAL; }
+["]([^"\\]|\\.)*["]     	{ yylval.string_t=yytext; return STRING_VAL; }
+[']([^'\\]|\\.)?[']		{ yylval.char_t= *yytext; return CHAR_VAL; }
 [_a-zA-Z][_a-zA-Z0-9]* 	{ return ID; }
 \n			{linenum++;}
 [ \t]			;
