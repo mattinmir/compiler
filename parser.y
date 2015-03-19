@@ -28,8 +28,11 @@
 	TypeSpecifier type_specifier_t;
 	VarDeclInitList* var_decl_init_list_t;
 	VarDeclInit* var_decl_or_init_t;
-	VarDeclId* var_decl_id_t
+	VarDeclId* var_decl_id_t;
 	SimpleExpression* simple_expression_t;
+	AndExpression* and_expression_t;
+	UnaryRelExpression* unary_rel_expression_t;
+	Relop relop_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -47,6 +50,10 @@
 %type <var_decl_or_init_t> var_decl_or_init
 %type <var_decl_id_t> var_decl_id
 %type <simple_expression_t> simple_expression
+%type <and_expression_t> and_expression
+%type <unary_rel_expression_t> unary_rel_expression
+%type <relop_t> relop
+
 
 %type <bool_t> TRUE FALSE
 %type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
@@ -216,24 +223,24 @@ simple_expression	: simple_expression LOGICAL_OR and_expression {$1->add($3); $$
 			| and_expression {$$ = new SimpleExpression(); $$->add($1)}
 			;
 
-and_expression		: and_expression LOGICAL_AND unary_rel_expression
-			| unary_rel_expression
+and_expression		: and_expression LOGICAL_AND unary_rel_expression {$1->add($3); $$ = $1 }
+			| unary_rel_expression  {$$ = new AndExpression(); $$->add($1)}
 			;
 
-unary_rel_expression	: LOGICAL_NOT unary_rel_expression
-			| rel_expression
+unary_rel_expression	: LOGICAL_NOT unary_rel_expression {$2->flip_state(); $$ = $2;}
+			| rel_expression {$$ = new UnaryrelExpression($1);}
 			; 
 
 rel_expression		: sum_expression relop sum_expression
 			| sum_expression
 			;
 
-relop			: LT_EQUAL_TO
-			| LESS_THAN
-			| GREATER_THAN
-			| GT_EQUAL_TO
-			| EQUAL_TO
-			| NOT_EQUAL_TO
+relop			: LT_EQUAL_TO {$$ = Relop::lt_equal_to}
+			| LESS_THAN {$$ = Relop::less_than}
+			| GREATER_THAN {$$ = Relop::greater_than}
+			| GT_EQUAL_TO {$$ = Relop::gt_equal_to}
+			| EQUAL_TO {$$ = Relop::equal_to}
+			| NOT_EQUAL_TO {$$ = Relop::not_equal_to}
 			;
 
 sum_expression		: sum_expression sumop term

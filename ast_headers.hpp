@@ -4,7 +4,6 @@
 #include "declaration.hpp"
 #include "var.hpp"
 #include "expressions.hpp"
-
-#include "ast.hpp"
+#include "constants.hpp"
 
 #endif
