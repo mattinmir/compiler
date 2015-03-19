@@ -3,6 +3,7 @@
 
 #include "enums.hpp"
 #include "declaration.hpp"
+#include "statements.hpp"
 
 #include <vector>
 #include <stdexcept>

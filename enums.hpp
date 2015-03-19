@@ -20,4 +20,16 @@ enum class Relop
 	not_equal_to
 };
 
+enum class AssignOp
+{
+	assign,
+	add_assign,
+	sub_assign,
+	mul_assign,
+	div_assign,
+	bitwise_and_assign,
+	bitwise_or_assign,
+	increment,
+	decrement
+};
 #endif

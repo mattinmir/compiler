@@ -36,7 +36,9 @@
 	ParamList* param_list_t;
 	ParamIdDecl* param_id_decl_t;
 	ParamId* param_id_t;
-
+	ExpressionStmt* expression_stmt_t;
+	Expression* expression_t;
+	Mutable* mutable_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -61,6 +63,9 @@
 %type <param_id_t> param_id
 %type <param_list_t> param_list params
 %type <param_id_decl_t> param_id_decl
+%type <expression_stmt_t> expression_stmt
+%type <expression_t> expression
+%type <mutable_t> mutable
 
 
 %type <bool_t> TRUE FALSE
@@ -199,8 +204,8 @@ statement_list		: /*Empty*/
 			| statement_list statement
 			;
 
-expression_stmt		: expression EOL
-			| EOL
+expression_stmt		: expression EOL {$$ = new ExpressionStmt($1);}
+			| EOL {$$ = new ExpressionStmt();}
 			;
 
 selection_stmt		: IF LPAREN simple_expression RPAREN statement %prec "else"
@@ -218,24 +223,24 @@ return_stmt		: RETURN EOL
 break_stmt		: BREAK EOL
 			;
 
-expression		: mutable ASSIGN expression
-			| mutable ADD_ASSIGN expression
-			| mutable SUB_ASSIGN expression
-			| mutable MUL_ASSIGN expression 
-			| mutable DIV_ASSIGN expression
-			| mutable BITWISE_AND_ASSIGN expression
-			| mutable BITWISE_OR_ASSIGN expression
-			| mutable INCREMENT
-			| mutable DECREMENT
-			| simple_expression
+expression		: mutable ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
+			| mutable ADD_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
+			| mutable SUB_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
+			| mutable MUL_ASSIGN expression  {$$ = new MutableExpression($1, $2, $3);}
+			| mutable DIV_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
+			| mutable BITWISE_AND_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
+			| mutable BITWISE_OR_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
+			| mutable INCREMENT {$$ = new MutableExpression($1, $2);}
+			| mutable DECREMENT {$$ = new MutableExpression($1, $2);}
+			| simple_expression {$$ = $1} // Because SimpleExpression inherits from expression, therefore SimpleExpression IS AN Expression
 			;
 
-simple_expression	: simple_expression LOGICAL_OR and_expression {$1->add($3); $$ = $1 }
+simple_expression	: simple_expression LOGICAL_OR and_expression {$1->add($3); $$ = $1 ;}
 			| and_expression {$$ = new SimpleExpression(); $$->add($1)}
 			;
 
-and_expression		: and_expression LOGICAL_AND unary_rel_expression {$1->add($3); $$ = $1 }
-			| unary_rel_expression  {$$ = new AndExpression(); $$->add($1)}
+and_expression		: and_expression LOGICAL_AND unary_rel_expression {$1->add($3); $$ = $1; }
+			| unary_rel_expression  {$$ = new AndExpression(); $$->add($1);}
 			;
 
 unary_rel_expression	: LOGICAL_NOT unary_rel_expression {$2->flip_state(); $$ = $2;}
@@ -283,8 +288,8 @@ factor			: immutable
 			| mutable
 			;
 
-mutable			: ID 
-			| ID LSQUARE expression RSQUARE
+mutable			: ID {$$= new Mutable($1);}
+			| ID LSQUARE expression RSQUARE {$$= new Mutable($1, $3);}
 			;
 
 immutable		: LPAREN expression RPAREN 

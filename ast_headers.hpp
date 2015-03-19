@@ -3,7 +3,9 @@
 
 #include "declaration.hpp"
 #include "var.hpp"
-#include "expressions.hpp"
+#include "simple_expressions.hpp"
 #include "constants.hpp"
+#include "fun.hpp"
+#include "statements.hpp"
 
 #endif
