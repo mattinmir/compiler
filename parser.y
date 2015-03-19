@@ -2,8 +2,7 @@
 	#include <cstdio>
 	#include <iostream>
 	
-	#include "Program.hpp"
-	#include "ast.hpp"
+	#include "ast_headers.hpp"
   	//#define YYDEBUG 1
   	using namespace std;
 	//extern Value *g_ast; // A way of getting the AST out
@@ -30,6 +29,7 @@
 	VarDeclInitList* var_decl_init_list_t;
 	VarDeclInit* var_decl_or_init_t;
 	VarDeclId* var_decl_id_t
+	SimpleExpression* simple_expression_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -46,6 +46,7 @@
 %type <var_decl_init_list_t> var_decl_init_list
 %type <var_decl_or_init_t> var_decl_or_init
 %type <var_decl_id_t> var_decl_id
+%type <simple_expression_t> simple_expression
 
 %type <bool_t> TRUE FALSE
 %type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
