@@ -37,7 +37,6 @@ public:
 class VarDeclInitList :public DeclarationList
 {
 private:
-	std::vector<VarDeclInit*> var_decl_inits;
 public:
 	VarDeclInitList() {}
 };

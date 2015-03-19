@@ -65,7 +65,7 @@
 
 
 declaration_list	: declaration_list declaration {$1->add($2); $$ = $1 }
-			| declaration {$$ = new DeclarationList; $$->add($1); }
+			| declaration {$$ = new DeclarationList(); $$->add($1); }
 			;
 
 declaration		: var_declarations {$$ = $1}
@@ -212,8 +212,8 @@ expression		: mutable ASSIGN expression
 			| simple_expression
 			;
 
-simple_expression	: simple_expression LOGICAL_OR and_expression
-			| and_expression
+simple_expression	: simple_expression LOGICAL_OR and_expression {$1->add($3); $$ = $1 }
+			| and_expression {$$ = new SimpleExpression(); $$->add($1)}
 			;
 
 and_expression		: and_expression LOGICAL_AND unary_rel_expression
