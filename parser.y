@@ -13,6 +13,7 @@
 }
 
 %union{
+	// Need pointer types for types of which we are going to dynamically allocate new objects(eg new DeclarationList())
   	char char_t;
 	short short_t;
   	int int_t;
@@ -25,6 +26,10 @@
 
 	DeclarationList* declaration_list_t;
 	Declaration* declaration_t;
+	TypeSpecifier type_specifier_t;
+	VarDeclInitList* var_decl_init_list_t;
+	VarDeclInit* var_decl_or_init_t;
+	VarDeclId* var_decl_id_t
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -36,9 +41,14 @@
 
 
 %type <declaration_list_t> declaration_list
-%type <declaration_t> declaration var_declaration fun_declaration
+%type <declaration_t> declaration var_declarations fun_declarations
+%type <type_specifier_t> type_specifier
+%type <var_decl_init_list_t> var_decl_init_list
+%type <var_decl_or_init_t> var_decl_or_init
+%type <var_decl_id_t> var_decl_id
+
 %type <bool_t> TRUE FALSE
-%type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED
+%type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
 %type <value_t> constant number boolean
 
 %left LESS_THAN GREATER_THAN ASSIGN GT_EQUAL_TO LT_EQUAL_TO NOT_EQUAL_TO
@@ -53,32 +63,33 @@
 %%
 
 
-declaration_list	: declaration_list declaration {$1->add_decl($2); $$ = $1 }
-			| declaration {$$ = new DeclarationList; $$->add_decl($1); }
+declaration_list	: declaration_list declaration {$1->add($2); $$ = $1 }
+			| declaration {$$ = new DeclarationList; $$->add($1); }
 			;
 
-declaration		: var_declaration
-			| fun_declaration
+declaration		: var_declarations {$$ = $1}
+			| fun_declarations {$$ = $1}
 			;
 
-var_declaration		: type_specifier var_decl_list EOL 
+var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1);} // int x, y, z=1; 
+			;
+/*
+scoped_var_declaration	: scoped_type_specifier var_decl_init_list EOL
+			;
+*/
+
+var_decl_init_list	: var_decl_init_list COMMA var_decl_or_init {$1->add($3); $$ = $1;}
+			| var_decl_or_init {$$ = new VarDeclInitList(); $$->add($1);}
 			;
 
-scoped_var_declaration	: scoped_type_specifier var_decl_list EOL
+var_decl_or_init	: var_decl_id ASSIGN simple_expression {$$ = new VarDeclInit($1, $3);}
+			| var_decl_id {$$ = new VarDeclInit($1);}
 			;
 
-var_decl_list		: var_decl_list COMMA var_decl_initialise
-			| var_decl_initialise
+var_decl_id		: ID { $$ = new VarDeclId($1);}
+			| ID LSQUARE INT_VAL RSQUARE { $$ = new VarDeclId($1, $3);}
 			;
-
-var_decl_initialise	: var_decl_id ASSIGN simple_expression
-			| var_decl_id
-			;
-
-var_decl_id		: ID
-			| ID LSQUARE INT_VAL RSQUARE
-			;
-
+/*
 			// modifier_list can be empty, so this means they are optional on either side of the type_specifier
 
 			// This grammar allows any number of modifiers in a list, but the standard only allows one of
@@ -86,12 +97,13 @@ var_decl_id		: ID
 scoped_type_specifier	:type_specifier
 			 // | modifier_list type_specifier modifier_list 
 			;
+*/
 
-type_specifier		: INT
-			| FLOAT
-			| DOUBLE
-			| CHAR
-			| BOOL
+type_specifier		: INT {$$ = TypeSpecifier::int_t}
+			| FLOAT {$$ = TypeSpecifier::float_t}
+			| DOUBLE {$$ = TypeSpecifier::double_t}
+			| CHAR {$$ = TypeSpecifier::char_t}
+			| BOOL {$$ = TypeSpecifier::bool_t}
 			;
 /*
 modifier_list		:---empty---
@@ -124,7 +136,7 @@ scope_var_modifier	: AUTO
 
 */
 
-fun_declaration		: type_specifier ID LPAREN params RPAREN statement
+fun_declarations	: type_specifier ID LPAREN params RPAREN statement
 			| ID LPAREN params RPAREN statement
 			;
 
@@ -153,15 +165,17 @@ statement		: expression_stmt
 			| iteration_stmt
 			| return_stmt
 			| break_stmt
-			| local_declarations
+			//| local_declarations
+			| var_declarations
 			;
 
 compound_stmt		: LBRACE statement_list RBRACE // int x; float y; ... statements
 			;
-
-local_declarations	: scoped_var_declaration
+/*
+local_declarations	: var_declarations
+			// | scoped_var_declaration
 			;
-
+*/
 statement_list		: /*Empty*/
 			| statement_list statement
 			;
@@ -272,16 +286,16 @@ arg_list		: arg_list COMMA expression
 
 constant		: number
 			| boolean
-			| CHAR_VAL {$$ = new Char($1);   $$->print(cout); }
-			| STRING_VAL {$$ = new String($1);   $$->print(cout); }
+			| CHAR_VAL {$$ = new Char($1);   }
+			| STRING_VAL {$$ = new String($1);   }
 			;
 
-number			: INT_VAL {$$ = new Int($1);   $$->print(cout); }
-			| DOUBLE_VAL {$$ = new Double($1);   $$->print(cout); }
+number			: INT_VAL {$$ = new Int($1);   }
+			| DOUBLE_VAL {$$ = new Double($1);   }
 			;
 
-boolean			: TRUE {$$ = new Bool(true);   $$->print(cout); }
-			| FALSE {$$ = new Bool(false);   $$->print(cout); }
+boolean			: TRUE {$$ = new Bool(true);   }
+			| FALSE {$$ = new Bool(false);   }
 			;
 
 %%

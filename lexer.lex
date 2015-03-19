@@ -88,6 +88,9 @@ int linenum = 0;
 "^="			{ return BITWISE_XOR_ASSIGN; }
 "|="			{ return BITWISE_OR_ASSIGN; }
 
+"++"			{ return INCREMENT; }
+"--"			{ return DECREMENT; }
+
 [0-9]+\.[0-9]+		{ yylval.double_t=atof(yytext); return DOUBLE_VAL; } 
 [0-9]+          	{ yylval.int_t=atoi(yytext); return INT_VAL; }
 ["]([^"\\]|\\.)*["]     	{ yylval.string_t=yytext; return STRING_VAL; }
