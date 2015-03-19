@@ -20,40 +20,57 @@ public:
 class DeclarationList
 {
 private:
-	std::vector<Declaration*> declaration_list;
+	std::vector<Declaration*> decls;
 public:
 	DeclarationList()
     {}
     
     void add_decl(Declaration* decl)
     {
-    	declaration_list.push_back(decl);
+    	decls.push_back(decl);
     }
         
    
 };
 
 
-/*
-typedef enum Type
+
+enum struct TypeSpecifier
 {
-	"int",
-	"float",
-	"double",
-	"char",
-	"bool"
+	int_t,
+	float_t,
+	double_t,
+	char_t,
+	bool_t
 };
 
 class VarDeclaration : public Declaration
 {
 private:
-	Type type_specifier;
+	TypeSpecifier type_specifier;
+	VarDeclarationList var_decls
+public:
+	VarDeclaration(TypeSpecifier _type_specifier) : type_specifier(_type_specifier)
 };
 
+class VarDeclarationList
+{
+private:
+	std::vector<VarDeclaration> var_decls;
+	
+public:
+	VarDeclarationList()
+    {}
+	
+    void add_var_decl(VarDeclaration var_decl)
+    {
+    	var_decls.push_back(var_decl);
+    }
+};
 
 class FunDeclaration : public Declaration
 {
 	
 };
-*/
+
 #endif

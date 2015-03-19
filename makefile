@@ -1,5 +1,5 @@
 all: parser.tab.cc lex.yy.cc
-	g++ parser.tab.cc lex.yy.cc -o compiler
+	g++ -std=c++0x parser.tab.cc lex.yy.cc -o compiler
 
 scanner: lex.yy.cc
 	g++ -o scanner
