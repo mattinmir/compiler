@@ -3,7 +3,7 @@
 
 #include "declaration.hpp"
 #include "expressions.hpp"
-
+#include "enums.hpp"
 
 #include <vector>
 #include <map>
@@ -42,14 +42,6 @@ public:
 };
 
 
-enum class TypeSpecifier
-{
-	int_t, 
-	float_t,
-	double_t,
-	char_t,
-	bool_t
-};
 
 class VarDeclarations : public Declaration
 {

@@ -33,6 +33,10 @@
 	AndExpression* and_expression_t;
 	UnaryRelExpression* unary_rel_expression_t;
 	Relop relop_t;
+	ParamList* param_list_t;
+	ParamIdDecl* param_id_decl_t;
+	ParamId* param_id_t;
+
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -44,7 +48,7 @@
 
 
 %type <declaration_list_t> declaration_list
-%type <declaration_t> declaration var_declarations fun_declarations
+%type <declaration_t> declaration var_declarations fun_declaration
 %type <type_specifier_t> type_specifier
 %type <var_decl_init_list_t> var_decl_init_list
 %type <var_decl_or_init_t> var_decl_or_init
@@ -53,6 +57,10 @@
 %type <and_expression_t> and_expression
 %type <unary_rel_expression_t> unary_rel_expression
 %type <relop_t> relop
+%type <bool_t> rel_expression
+%type <param_id_t> param_id
+%type <param_list_t> param_list params
+%type <param_id_decl_t> param_id_decl
 
 
 %type <bool_t> TRUE FALSE
@@ -76,7 +84,7 @@ declaration_list	: declaration_list declaration {$1->add($2); $$ = $1 }
 			;
 
 declaration		: var_declarations {$$ = $1}
-			| fun_declarations {$$ = $1}
+			| fun_declaration {$$ = $1}
 			;
 
 var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1);} // int x, y, z=1; 
@@ -144,27 +152,30 @@ scope_var_modifier	: AUTO
 
 */
 
-fun_declarations	: type_specifier ID LPAREN params RPAREN statement
-			| ID LPAREN params RPAREN statement
+fun_declaration		: type_specifier ID LPAREN params RPAREN statement {$$ = new FunDeclaration($1, $2, $4, $6);}
+			//| ID LPAREN params RPAREN statement
 			;
 
-params			: /*Empty*/
-			| param_list
+params			: /*Empty*/ {$$ = new ParamList();} // Empty paramlist
+			| param_list {$$ = $1}
 			;
 
-param_list		: param_list EOL param_type_list
-			| param_type_list
+param_list		: param_list COMMA param_id_decl {$1->add($3); $$ = $1;}
+			| param_id_decl {$$ = new ParamList(); $$->add($1);}
 			;
 
+param_id_decl		: type_specifier param_id {$$ = new ParamIdDecl($1, $2); }
+			;
+/*
 param_type_list		: type_specifier param_id_list
 			;
 
 param_id_list		: param_id_list COMMA param_id
 			| param_id
 			;
-
-param_id		: ID
-			| ID LSQUARE RSQUARE
+*/
+param_id		: ID {$$ = new ParamId($1, false);}
+			| ID LSQUARE RSQUARE {$$ = new ParamId($1, true);} // bool sets `is_array`
 			;
 
 statement		: expression_stmt

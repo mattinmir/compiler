@@ -1,20 +1,18 @@
 #ifndef EXPRESSIONS_HPP
 #define EXPRESSIONS_HPP 
 
+#include "enums.hpp"
+
 #include <vector>
 #include <map>
 #include <stdexcept>
 #include <iostream>
 
-enum class Relop
+class SumExpression
 {
-	lt_equal_to,
-	less_than,
-	greater_than,
-	gt_equal_to,
-	equal_to,
-	not_equal_to
+	
 };
+
 
 class RelExpression
 {
