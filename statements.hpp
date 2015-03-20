@@ -58,16 +58,14 @@ public:
 			: condition(_condition), body(_body)
 			{}
 	
-	
-};
-
-class IterationStmt : public Statement
-{
-	
 };
 
 class ReturnStmt : public Statement
 {
+private:
+	Expression expr;
+public:
+	ReturnStmt(Expression _expr = NULL) : expr(_expr) {}
 	
 };
 

@@ -43,6 +43,8 @@
 	Statement* statement_t;
 	CompoundStmt* compound_stmt_t;
 	IfStmt* if_stmt_t;
+	WhileStmt* while_stmt_t;
+	ReturnStmt* return_stmt_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -74,6 +76,9 @@
 %type <compound_stmt_t> compound_stmt statement_list
 %type <statement_t> statement
 %type <if_stmt_t> if_stmt
+%type <while_stmt_t> while_stmt
+%type <return_stmt_t> return_stmt
+
 
 %type <bool_t> TRUE FALSE
 %type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
@@ -223,22 +228,22 @@ while_stmt		: WHILE LPAREN simple_expression RPAREN statement {$$ = new WhileStm
 			//| FOR LPAREN var_declaration EOL expression EOL expression RPAREN statement
 			;
 
-return_stmt		: RETURN EOL
-			| RETURN expression EOL
+return_stmt		: RETURN EOL {$$ = new ReturnStmt();}
+			| RETURN expression EOL {$$ = new ReturnStmt($2);}
 			;
 
-break_stmt		: BREAK EOL
+break_stmt		: BREAK EOL {$$ = new BreakStmt()}
 			;
 
-expression		: mutable ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
-			| mutable ADD_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
-			| mutable SUB_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
-			| mutable MUL_ASSIGN expression  {$$ = new MutableExpression($1, $2, $3);}
-			| mutable DIV_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
-			| mutable BITWISE_AND_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
-			| mutable BITWISE_OR_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
-			| mutable INCREMENT {$$ = new MutableExpression($1, $2);}
-			| mutable DECREMENT {$$ = new MutableExpression($1, $2);}
+expression		: mutable ASSIGN expression {$$ = new MutableExpression($1, AssignOp::assign, $3);}
+			| mutable ADD_ASSIGN expression {$$ = new MutableExpression($1, AssignOp::add_assign, $3);}
+			| mutable SUB_ASSIGN expression {$$ = new MutableExpression($1, AssignOp::sub_assign, $3);}
+			| mutable MUL_ASSIGN expression  {$$ = new MutableExpression($1, AssignOp::mul_assign, $3);}
+			| mutable DIV_ASSIGN expression {$$ = new MutableExpression($1, AssignOp::div_assign, $3);}
+			| mutable BITWISE_AND_ASSIGN expression {$$ = new MutableExpression($1, AssignOp::bitwise_and_assign, $3);}
+			| mutable BITWISE_OR_ASSIGN expression {$$ = new MutableExpression($1, AssignOp::bitwise_or_assign, $3);}
+			| mutable INCREMENT {$$ = new MutableExpression($1, AssignOp::increment);}
+			| mutable DECREMENT {$$ = new MutableExpression($1, AssignOp::decrement);}
 			| simple_expression {$$ = $1;} // Because SimpleExpression inherits from expression, therefore SimpleExpression IS AN Expression
 			;
 
