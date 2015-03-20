@@ -2,7 +2,7 @@
 #define SIMPLE_EXPRESSIONS_HPP
 
 #include "enums.hpp"
-#include "expressions.hpp"
+#include "expression.hpp"
 
 #include <vector>
 #include <map>
@@ -18,18 +18,18 @@ class SumExpression
 class RelExpression
 {
 private:
-	SumExpression left;
+	SumExpression* left;
 	Relop op;
-	SumExpression right;
+	SumExpression* right;
 };
 
 class UnaryRelExpression
 {
 private:
 	bool state; //if state is false, logical 'NOT' the expression
-	RelExpression rel_expr;
+	RelExpression* rel_expr;
 public:
-	UnaryRelExpression(RelExpression _rel_expr) : rel_expr(_rel_expr), state(true){}
+	UnaryRelExpression(RelExpression* _rel_expr) : rel_expr(_rel_expr), state(true){}
 	
 	void flip_state()
 	{

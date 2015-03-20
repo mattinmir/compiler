@@ -2,8 +2,9 @@
 #define VAR_HPP
 
 #include "declaration.hpp"
-#include "expressions.hpp"
+#include "simple_expressions.hpp"
 #include "enums.hpp"
+#include "statements.hpp"
 
 #include <vector>
 #include <map>
@@ -26,11 +27,11 @@ public:
 class VarDeclInit : public Declaration
 {
 private:
-	VarDeclId id;
-	SimpleExpression value;
+	VarDeclId* id;
+	SimpleExpression* value;
 public:
 	// If the variable has no initialisation, its value starts as null by deafult
-	VarDeclInit(VarDeclId _id, SimpleExpression _value = NULL) : id(_id), value(_value) {}
+	VarDeclInit(VarDeclId* _id, SimpleExpression* _value = NULL) : id(_id), value(_value) {}
 };
 
 
@@ -43,11 +44,11 @@ public:
 
 
 
-class VarDeclarations : public Declaration
+class VarDeclarations :  public Declaration, public Statement
 {
 private:
 	TypeSpecifier type_specifier;
-	VarDeclInitList var_decl_init_list;
+	VarDeclInitList* var_decl_init_list;
 public:
 	VarDeclarations(TypeSpecifier _type_specifier) : type_specifier(_type_specifier) {}
 };

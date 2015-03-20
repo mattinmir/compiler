@@ -39,7 +39,7 @@ enum class Sumop
 	sub
 };
 
-enum class mulop
+enum class Mulop
 {
 	mul,
 	div,

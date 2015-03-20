@@ -24,10 +24,10 @@ public:
 class ParamIdDecl
 {
 private:
-	TypeSpecifier* type_specifier;
+	TypeSpecifier type_specifier;
 	ParamId* param_id;
 public:
-	ParamIdDecl(TypeSpecifier _type_specifier, ParamId _param_id) 
+	ParamIdDecl(TypeSpecifier _type_specifier, ParamId* _param_id) 
 				: type_specifier(_type_specifier), param_id(_param_id)
 				{}
 };
@@ -49,13 +49,13 @@ public:
 class FunDeclaration : public Declaration
 {
 private:
-	TypeSpecifier* type_specifier;
+	TypeSpecifier type_specifier;
 	std::string id;
 	ParamList* params;
 	Statement* statement;
 	
 public:
-	FunDeclaration(TypeSpecifier* _type_specifier, std::string _id, Params* _params, Statement* _statement) 
+	FunDeclaration(TypeSpecifier _type_specifier, std::string _id, ParamList* _params, Statement* _statement) 
 				: type_specifier(_type_specifier),  id(_id),  params(_params),  statement(_statement)
 				{}
 	

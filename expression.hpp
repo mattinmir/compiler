@@ -2,7 +2,7 @@
 #define EXPRESSION_HPP
 
 #include <string>
-
+#include "enums.hpp"
 class Expression // SimpleExpression and MutableExpression inherit from thuis as they can both be expressions
 {
 public:

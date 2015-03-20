@@ -2,18 +2,18 @@
 #define DECLARATION_HPP
 
 
+
 #include <vector>
 #include <map>
 #include <stdexcept>
 #include <iostream>
 
-class Declaration
+class Declaration 
 {
 private:
 
 public:
-    virtual ~Declaration()
-    {}
+
 
 };
 

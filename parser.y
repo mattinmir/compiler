@@ -208,7 +208,7 @@ statement		: expression_stmt {$$ = $1;}
 			| return_stmt {$$ = $1;}
 			| break_stmt {$$ = $1;}
 			//| local_declarations
-			| var_declarations {$$ = $1;}
+			| var_declarations {$$ = $1;}//***********************************
 			;
 
 expression_stmt		: expression EOL {$$ = new ExpressionStmt($1);}
@@ -222,7 +222,9 @@ local_declarations	: var_declarations
 			// | scoped_var_declaration
 			;
 */
-statement_list		: /*Empty*/ {$$ = new CompundStmt();}
+//****************************************************************************************************************
+// sort out instantiatition of new compund stmt
+statement_list		: /*Empty*/ {$$ = new CompoundStmt();}
 			| statement_list statement {$1->add($2); $$ = $1;}
 			;
 
@@ -262,7 +264,7 @@ and_expression		: and_expression LOGICAL_AND unary_rel_expression {$1->add($3); 
 			;
 
 unary_rel_expression	: LOGICAL_NOT unary_rel_expression {$2->flip_state(); $$ = $2;}
-			| rel_expression {$$ = new UnaryrelExpression($1);}
+			| rel_expression {$$ = new UnaryRelExpression($1);}
 			; 
 
 rel_expression		: sum_expression relop sum_expression
@@ -281,17 +283,17 @@ sum_expression		: sum_expression sumop term
 			| term
 			;
 
-sumop			: ADD// {$$ = Sumop::add;}
-			| SUB //{$$ = Sumop::sub;}
+sumop			: ADD {$$ = Sumop::add;}
+			| SUB {$$ = Sumop::sub;}
 			;
 
 term			: term mulop unary_expression
 			| unary_expression
 			;
 
-mulop			: MUL// {$$ = Mulop::mul;}
-			| DIV //{$$ = Mulop::div;}
-			| MODULO //{$$ = Mulop::modulo;}
+mulop			: MUL {$$ = Mulop::mul;}
+			| DIV {$$ = Mulop::div;}
+			| MODULO {$$ = Mulop::modulo;}
 			;
 
 unary_expression	: unaryop unary_expression

@@ -8,10 +8,9 @@
 
 #include <vector>
 
-class Statement
+class Statement 
 {
 public:
-	Statement(){}
 };
 
 class ExpressionStmt : public Statement
@@ -19,7 +18,7 @@ class ExpressionStmt : public Statement
 private:
 	Expression* expr;
 public:
-	ExpressionStmt(Expression _expr = NULL) : expr(_expr)
+	ExpressionStmt(Expression* _expr = NULL) : expr(_expr)
 	{}
 };
 
@@ -39,11 +38,11 @@ public:
 class IfStmt : public Statement
 {
 private:
-	SimpleExpression condition;
-	Statement if_body;
-	Statement else_body;
+	SimpleExpression* condition;
+	Statement* if_body;
+	Statement* else_body;
 public:
-	IfStmt(SimpleExpression _condition, Statement _if_body, Statement _else_body = NULL)
+	IfStmt(SimpleExpression* _condition, Statement* _if_body, Statement* _else_body = NULL)
 		: condition(_condition), if_body(_if_body), else_body(_else_body) 
 		{}
 };
@@ -51,22 +50,20 @@ public:
 class WhileStmt : public Statement
 {
 private:
-	SimpleExpression condition;
-	Statement body;
+	SimpleExpression* condition;
+	Statement* body;
 public:
-	WhileStmt(SimpleExpression _condition, Statement _body) 
+	WhileStmt(SimpleExpression* _condition, Statement* _body) 
 			: condition(_condition), body(_body)
 			{}
-	
 };
 
 class ReturnStmt : public Statement
 {
 private:
-	Expression expr;
+	Expression* expr;
 public:
-	ReturnStmt(Expression _expr = NULL) : expr(_expr) {}
-	
+	ReturnStmt(Expression* _expr = NULL) : expr(_expr) {}
 };
 
 class BreakStmt : public Statement
@@ -74,8 +71,5 @@ class BreakStmt : public Statement
 public:
 	BreakStmt(){}
 };
-
-
-
 
 #endif
