@@ -27,7 +27,7 @@ public:
 		terms.push_back(term);
 	}
 	
-	void add_op(Sumop* op)
+	void add_op(Sumop op)
 	{
 		ops.push_back(op);
 	}

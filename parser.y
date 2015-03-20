@@ -18,9 +18,9 @@
   	int primitive_int_t;
 	long primitive_long_t;
 	double primitive_double_t;
-	char* primitive_string_t
-	void* ptr_t;
-	bool bool_t;
+	char* primitive_string_t;
+	void* primitive_ptr_t;
+	bool primitive_bool_t;
 
 	DeclarationList* declaration_list_t;
 	Declaration* declaration_t;
@@ -57,6 +57,8 @@
 	Term* term_t;
 	Factor* factor_t;
 	Immutable* immutable_t;
+	FunDeclaration* fun_declaration_t;
+	VarDeclarations* var_declarations_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -68,7 +70,9 @@
 
 
 %type <declaration_list_t> declaration_list
-%type <declaration_t> declaration var_declarations fun_declaration
+%type <declaration_t> declaration
+%type <fun_declaration_t> fun_declaration
+%type <var_declarations_t> var_declarations
 %type <type_specifier_t> type_specifier
 %type <var_decl_init_list_t> var_decl_init_list
 %type <var_decl_or_init_t> var_decl_or_init
@@ -284,8 +288,8 @@ unary_rel_expression	: LOGICAL_NOT unary_rel_expression {$2->logical_not(); $$ =
 			| rel_expression {$$ = new UnaryRelExpression($1);}
 			; 
 
-rel_expression		: sum_expression relop sum_expression
-			| sum_expression
+rel_expression		: sum_expression relop sum_expression {$$ = new RelExpression($1 ,$2, $3);}
+			| sum_expression {$$ = new RelExpression($1);}
 			;
 
 relop			: LT_EQUAL_TO {$$ = Relop::lt_equal_to}

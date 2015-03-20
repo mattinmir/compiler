@@ -9,6 +9,15 @@
 
 #include "basics.hpp"
 
+class Constant : public Immutable
+{
+	
+};
+
+class Number : public Constant
+{
+	
+};
 
 class Int : public Number
 {
@@ -57,7 +66,7 @@ class Boolean : public Constant
 private:
 	bool val;
 public:
-	Bool(bool _val) : val(_val)
+	Boolean(bool _val) : val(_val)
 	{}
 	
 	void print(std::ostream& dst) const
@@ -80,13 +89,5 @@ public:
 	}
 };
 
-class Number : public Constant
-{
-	
-};
 
-class Constant : public Immutable
-{
-	
-};
 #endif

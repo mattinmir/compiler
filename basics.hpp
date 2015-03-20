@@ -38,7 +38,7 @@ public:
 		factors.push_back(factor);
 	}
 	
-	void add_op(Mulop* op)
+	void add_op(Mulop op)
 	{
 		ops.push_back(op);
 	}
