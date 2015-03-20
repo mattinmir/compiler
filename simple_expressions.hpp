@@ -3,14 +3,34 @@
 
 #include "enums.hpp"
 #include "expression.hpp"
+#include "basics.hpp"
 
 #include <vector>
 #include <map>
 #include <stdexcept>
 #include <iostream>
 
+
+
+
+
 class SumExpression
 {
+private:
+	std::vector<Term*> terms; 
+	std::vector<Sumop> ops; // ops[0] goes between terms[0] and terms[1]
+public:
+	SumExpression(){}
+	
+	void add_term(Term* term)
+	{
+		terms.push_back(term);
+	}
+	
+	void add_op(Sumop* op)
+	{
+		ops.push_back(op);
+	}
 	
 };
 
@@ -21,19 +41,22 @@ private:
 	SumExpression* left;
 	Relop op;
 	SumExpression* right;
+public:
+	RelExpression(SumExpression* _left, Relop _op, SumExpression* _right)
+				: left(_left), op(_op), right(_right) {}
 };
 
 class UnaryRelExpression
 {
 private:
-	bool state; //if state is false, logical 'NOT' the expression
+	bool negated; //if negated is true, logical 'NOT' the expression
 	RelExpression* rel_expr;
 public:
-	UnaryRelExpression(RelExpression* _rel_expr) : rel_expr(_rel_expr), state(true){}
+	UnaryRelExpression(RelExpression* _rel_expr) : rel_expr(_rel_expr), negated(false){}
 	
-	void flip_state()
+	void logical_not()
 	{
-		state = !state;
+		negated = !negated;
 	}
 };
 

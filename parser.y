@@ -13,15 +13,14 @@
 
 %union{
 	// Need pointer types for types of which we are going to dynamically allocate new objects(eg new DeclarationList())
-  	char char_t;
-	short short_t;
-  	int int_t;
-	long long_t;
-	double double_t;
+  	char primitive_char_t;
+	short primitive_short_t;
+  	int primitive_int_t;
+	long primitive_long_t;
+	double primitive_double_t;
+	char* primitive_string_t
 	void* ptr_t;
-  	char* string_t;
 	bool bool_t;
-	Value* value_t;
 
 	DeclarationList* declaration_list_t;
 	Declaration* declaration_t;
@@ -48,14 +47,24 @@
 	BreakStmt* break_stmt_t;
 	Sumop sumop_t;
 	Mulop mulop_t;
+	Boolean* boolean_t;
+	Number* number_t;
+	Constant* constant_t;
+	ArgList* arg_list_t;
+	Call* call_t;
+	RelExpression* rel_expression_t;
+	SumExpression* sum_expression_t;
+	Term* term_t;
+	Factor* factor_t;
+	Immutable* immutable_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
 
-%token <int_t> INT_VAL 
-%token <double_t> DOUBLE_VAL 
-%token <string_t> STRING_VAL ID
-%token <char_t>	CHAR_VAL
+%token <primitive_int_t> INT_VAL 
+%token <primitive_double_t> DOUBLE_VAL 
+%token <primitive_string_t> STRING_VAL ID
+%token <primitive_char_t> CHAR_VAL
 
 
 %type <declaration_list_t> declaration_list
@@ -68,7 +77,6 @@
 %type <and_expression_t> and_expression
 %type <unary_rel_expression_t> unary_rel_expression
 %type <relop_t> relop
-%type <bool_t> rel_expression
 %type <param_id_t> param_id
 %type <param_list_t> param_list params
 %type <param_id_decl_t> param_id_decl
@@ -84,11 +92,20 @@
 %type <sumop_t> sumop
 %type <mulop_t> mulop
 %type <break_stmt_t> break_stmt
+%type <boolean_t> boolean
+%type <number_t> number
+%type <constant_t> constant
+%type <arg_list_t> arg_list args
+%type <call_t> call
+%type <rel_expression_t> rel_expression
+%type <sum_expression_t> sum_expression
+%type <term_t> term
+%type <factor_t> factor
+%type <immutable_t> immutable
 
-
-%type <bool_t> TRUE FALSE
-%type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
-%type <value_t> constant number boolean
+%type <primitive_bool_t> TRUE FALSE
+//%type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
+//%type <value_t> constant number boolean
 
 %left LESS_THAN GREATER_THAN ASSIGN GT_EQUAL_TO LT_EQUAL_TO NOT_EQUAL_TO
 %left ADD SUB ADD_ASSIGN SUB_ASSIGN INCREMENT DECREMENT
@@ -263,7 +280,7 @@ and_expression		: and_expression LOGICAL_AND unary_rel_expression {$1->add($3); 
 			| unary_rel_expression  {$$ = new AndExpression(); $$->add($1);}
 			;
 
-unary_rel_expression	: LOGICAL_NOT unary_rel_expression {$2->flip_state(); $$ = $2;}
+unary_rel_expression	: LOGICAL_NOT unary_rel_expression {$2->logical_not(); $$ = $2;}
 			| rel_expression {$$ = new UnaryRelExpression($1);}
 			; 
 
@@ -279,16 +296,16 @@ relop			: LT_EQUAL_TO {$$ = Relop::lt_equal_to}
 			| NOT_EQUAL_TO {$$ = Relop::not_equal_to}
 			;
 
-sum_expression		: sum_expression sumop term
-			| term
+sum_expression		: sum_expression sumop term {$1->add_op($2); $1->add_term($3); $$ = $1;}
+			| term {$$ = new SumExpression(); $$->add_term($1);}
 			;
 
 sumop			: ADD {$$ = Sumop::add;}
 			| SUB {$$ = Sumop::sub;}
 			;
 
-term			: term mulop unary_expression
-			| unary_expression
+term			: term mulop factor {$1->add_op($2); $1->add_factor($3); $$ = $1;}
+			| factor {$$ = new Term(); $$->add_factor($1);}
 			;
 
 mulop			: MUL {$$ = Mulop::mul;}
@@ -296,40 +313,33 @@ mulop			: MUL {$$ = Mulop::mul;}
 			| MODULO {$$ = Mulop::modulo;}
 			;
 
-unary_expression	: unaryop unary_expression
-			| factor
-			;
-
-unaryop			: SUB 
-			| MUL
-			;
-
-factor			: immutable
-			| mutable
+factor			: SUB factor {$2->negate();} // Unary minus
+			| immutable {$$ = $1}
+			| mutable {$$ = $1}
 			;
 
 mutable			: ID {$$= new Mutable($1);}
 			| ID LSQUARE expression RSQUARE {$$= new Mutable($1, $3);}
 			;
 
-immutable		: LPAREN expression RPAREN 
-			| call 
-			| constant
+immutable		: LPAREN expression RPAREN {$$ = $2;}
+			| call {$$ = $1;}
+			| constant {$$ = $1;}
 			;
 
-call			: ID LPAREN args RPAREN
+call			: ID LPAREN args RPAREN {$$ = new Call()}
 			;
 
-args			: /*Empty*/
-			| arg_list
+args			: /*Empty*/ {$$ = new ArgList();}
+			| arg_list {$$ = $1;}
 			;
 
-arg_list		: arg_list COMMA expression
-			| expression
+arg_list		: arg_list COMMA expression {$1->add($3); $$ = $1;}
+			| expression {$$ = new ArgList(); $$->add($1);}
 			;
 
-constant		: number
-			| boolean
+constant		: number {$$ = $1}
+			| boolean {$$ = $1}
 			| CHAR_VAL {$$ = new Char($1);   }
 			| STRING_VAL {$$ = new String($1);   }
 			;
@@ -338,8 +348,8 @@ number			: INT_VAL {$$ = new Int($1);   }
 			| DOUBLE_VAL {$$ = new Double($1);   }
 			;
 
-boolean			: TRUE {$$ = new Bool(true);   }
-			| FALSE {$$ = new Bool(false);   }
+boolean			: TRUE {$$ = new Boolean(true);   }
+			| FALSE {$$ = new Boolean(false);   }
 			;
 
 %%

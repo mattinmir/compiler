@@ -7,19 +7,10 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "basics.hpp"
 
 
-
-class Value
-{
-public:
-    virtual ~Value()
-    {}
-        
-    virtual void print(std::ostream& dst) const=0;
-};
-
-class Int : public Value
+class Int : public Number
 {
 private:
 	int val;
@@ -33,7 +24,7 @@ public:
 	}
 };
 
-class Double : public Value
+class Double : public Number
 {
 private:
 	double val;
@@ -47,7 +38,7 @@ public:
 	}
 };
 
-class Char : public Value
+class Char : public Constant
 {
 private:
 	char val;
@@ -61,7 +52,7 @@ public:
 	}
 };
 
-class Bool : public Value
+class Boolean : public Constant
 {
 private:
 	bool val;
@@ -75,7 +66,7 @@ public:
 	}
 };
 
-class String : public Value
+class String : public Constant
 {
 private:
 	std::string val;
@@ -89,5 +80,13 @@ public:
 	}
 };
 
+class Number : public Constant
+{
+	
+};
 
+class Constant : public Immutable
+{
+	
+};
 #endif

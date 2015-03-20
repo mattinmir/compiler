@@ -3,7 +3,9 @@
 
 #include <string>
 #include "enums.hpp"
-class Expression // SimpleExpression and MutableExpression inherit from thuis as they can both be expressions
+#include "basics.hpp"
+
+class Expression : public Immutable // SimpleExpression and MutableExpression inherit from this as they can both be expressions
 {
 public:
 	Expression(){}
@@ -11,7 +13,7 @@ public:
 };
 
 
-class Mutable
+class Mutable : public Factor
 {
 private:
 	std::string id;
@@ -35,4 +37,27 @@ public:
 					{}
 };
 
+
+class ArgList
+{
+private:
+	std::vector<Expression*> exprs;
+public:
+	ArgList(){}
+	
+	void add(Expression* expr)
+	{
+		exprs.push_back(expr);
+	}
+};
+
+class Call : public Immutable
+{
+private:
+	std::string func_id;
+	ArgList* args;
+public:
+	Call(std::string _func_id, ArgList* _args) : func_id(_func_id), args(_args){}
+
+};
 #endif
