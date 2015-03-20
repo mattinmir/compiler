@@ -3,6 +3,7 @@
 
 enum class TypeSpecifier
 {
+	null,
 	int_t, 
 	float_t,
 	double_t,
@@ -12,6 +13,7 @@ enum class TypeSpecifier
 
 enum class Relop
 {
+	null,
 	lt_equal_to,
 	less_than,
 	greater_than,
@@ -22,6 +24,7 @@ enum class Relop
 
 enum class AssignOp
 {
+	null,
 	assign,
 	add_assign,
 	sub_assign,
@@ -35,12 +38,14 @@ enum class AssignOp
 
 enum class Sumop
 {
+	null,
 	add,
 	sub
 };
 
 enum class Mulop
 {
+	null,
 	mul,
 	div,
 	modulo

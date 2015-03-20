@@ -331,7 +331,7 @@ immutable		: LPAREN expression RPAREN {$$ = $2;}
 			| constant {$$ = $1;}
 			;
 
-call			: ID LPAREN args RPAREN {$$ = new Call()}
+call			: ID LPAREN args RPAREN {$$ = new Call($1, $3)}
 			;
 
 args			: /*Empty*/ {$$ = new ArgList();}

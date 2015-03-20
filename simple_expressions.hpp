@@ -42,7 +42,7 @@ private:
 	Relop op;
 	SumExpression* right;
 public:
-	RelExpression(SumExpression* _left, Relop _op, SumExpression* _right)
+	RelExpression(SumExpression* _left, Relop _op = Relop::null, SumExpression* _right = NULL)
 				: left(_left), op(_op), right(_right) {}
 };
 
