@@ -7,5 +7,7 @@
 #include "constants.hpp"
 #include "fun.hpp"
 #include "statements.hpp"
+#include "expression.hpp"
+#include "enums.hpp"
 
 #endif

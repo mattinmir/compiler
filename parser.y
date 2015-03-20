@@ -45,6 +45,9 @@
 	IfStmt* if_stmt_t;
 	WhileStmt* while_stmt_t;
 	ReturnStmt* return_stmt_t;
+	BreakStmt* break_stmt_t;
+	Sumop sumop_t;
+	Mulop mulop_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -78,6 +81,9 @@
 %type <if_stmt_t> if_stmt
 %type <while_stmt_t> while_stmt
 %type <return_stmt_t> return_stmt
+%type <sumop_t> sumop
+%type <mulop_t> mulop
+%type <break_stmt_t> break_stmt
 
 
 %type <bool_t> TRUE FALSE
@@ -275,17 +281,17 @@ sum_expression		: sum_expression sumop term
 			| term
 			;
 
-sumop			: ADD 
-			| SUB
+sumop			: ADD// {$$ = Sumop::add;}
+			| SUB //{$$ = Sumop::sub;}
 			;
 
 term			: term mulop unary_expression
 			| unary_expression
 			;
 
-mulop			: MUL
-			| DIV
-			| MODULO
+mulop			: MUL// {$$ = Mulop::mul;}
+			| DIV //{$$ = Mulop::div;}
+			| MODULO //{$$ = Mulop::modulo;}
 			;
 
 unary_expression	: unaryop unary_expression

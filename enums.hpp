@@ -32,4 +32,20 @@ enum class AssignOp
 	increment,
 	decrement
 };
+
+enum class Sumop
+{
+	add,
+	sub
+};
+
+enum class mulop
+{
+	mul,
+	div,
+	modulo
+};
+
+
+
 #endif

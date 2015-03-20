@@ -71,7 +71,8 @@ public:
 
 class BreakStmt : public Statement
 {
-	
+public:
+	BreakStmt(){}
 };
 
 
