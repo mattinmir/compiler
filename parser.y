@@ -228,7 +228,7 @@ statement		: expression_stmt {$$ = $1;}
 			| return_stmt {$$ = $1;}
 			| break_stmt {$$ = $1;}
 			//| local_declarations
-			| var_declarations {$$ = $1;}//***********************************
+			| var_declarations {$$ = $1;}
 			;
 
 expression_stmt		: expression EOL {$$ = new ExpressionStmt($1);}
