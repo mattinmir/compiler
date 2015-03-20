@@ -2,6 +2,7 @@
 #define SIMPLE_EXPRESSIONS_HPP
 
 #include "enums.hpp"
+#include "expressions.hpp"
 
 #include <vector>
 #include <map>

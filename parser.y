@@ -39,6 +39,10 @@
 	ExpressionStmt* expression_stmt_t;
 	Expression* expression_t;
 	Mutable* mutable_t;
+	AssignOp* assign_op_t;
+	Statement* statement_t;
+	CompoundStmt* compound_stmt_t;
+	IfStmt* if_stmt_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
@@ -66,7 +70,10 @@
 %type <expression_stmt_t> expression_stmt
 %type <expression_t> expression
 %type <mutable_t> mutable
-
+%type <assign_op_t> ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN BITWISE_AND_ASSIGN BITWISE_OR_ASSIGN INCREMENT DECREMENT
+%type <compound_stmt_t> compound_stmt statement_list
+%type <statement_t> statement
+%type <if_stmt_t> if_stmt
 
 %type <bool_t> TRUE FALSE
 %type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
@@ -183,36 +190,36 @@ param_id		: ID {$$ = new ParamId($1, false);}
 			| ID LSQUARE RSQUARE {$$ = new ParamId($1, true);} // bool sets `is_array`
 			;
 
-statement		: expression_stmt
-			| compound_stmt
-			| selection_stmt
-			| iteration_stmt
-			| return_stmt
-			| break_stmt
+statement		: expression_stmt {$$ = $1;}
+			| compound_stmt {$$ = $1;}
+			| if_stmt {$$ = $1;}
+			| while_stmt {$$ = $1;}
+			| return_stmt {$$ = $1;}
+			| break_stmt {$$ = $1;}
 			//| local_declarations
-			| var_declarations
-			;
-
-compound_stmt		: LBRACE statement_list RBRACE // int x; float y; ... statements
-			;
-/*
-local_declarations	: var_declarations
-			// | scoped_var_declaration
-			;
-*/
-statement_list		: /*Empty*/
-			| statement_list statement
+			| var_declarations {$$ = $1;}
 			;
 
 expression_stmt		: expression EOL {$$ = new ExpressionStmt($1);}
 			| EOL {$$ = new ExpressionStmt();}
 			;
 
-selection_stmt		: IF LPAREN simple_expression RPAREN statement %prec "else"
-			| IF LPAREN simple_expression RPAREN statement ELSE statement
+compound_stmt		: LBRACE statement_list RBRACE {$$ = $2}// int x; float y; ... statements
+			;
+/*
+local_declarations	: var_declarations
+			// | scoped_var_declaration
+			;
+*/
+statement_list		: /*Empty*/ {$$ = new CompundStmt();}
+			| statement_list statement {$1->add($2); $$ = $1;}
 			;
 
-iteration_stmt		: WHILE LPAREN simple_expression RPAREN statement 
+if_stmt			: IF LPAREN simple_expression RPAREN statement %prec "else" {$$ = new IfStmt($3, $5);}
+			| IF LPAREN simple_expression RPAREN statement ELSE statement {$$ = new IfStmt($3, $5, $7);}
+			;
+
+while_stmt		: WHILE LPAREN simple_expression RPAREN statement {$$ = new WhileStmt($3, $5);}
 			//| FOR LPAREN var_declaration EOL expression EOL expression RPAREN statement
 			;
 
@@ -232,7 +239,7 @@ expression		: mutable ASSIGN expression {$$ = new MutableExpression($1, $2, $3);
 			| mutable BITWISE_OR_ASSIGN expression {$$ = new MutableExpression($1, $2, $3);}
 			| mutable INCREMENT {$$ = new MutableExpression($1, $2);}
 			| mutable DECREMENT {$$ = new MutableExpression($1, $2);}
-			| simple_expression {$$ = $1} // Because SimpleExpression inherits from expression, therefore SimpleExpression IS AN Expression
+			| simple_expression {$$ = $1;} // Because SimpleExpression inherits from expression, therefore SimpleExpression IS AN Expression
 			;
 
 simple_expression	: simple_expression LOGICAL_OR and_expression {$1->add($3); $$ = $1 ;}

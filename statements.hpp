@@ -3,52 +3,80 @@
 
 #include "var.hpp"
 #include "enums.hpp"
+#include "expression.hpp"
+#include "simple_expressions.hpp"
+
+#include <vector>
 
 class Statement
 {
-
-};
-
-class Mutable
-{
-private:
-	std::string id;
-	Expression array_size;
 public:
-	Mutable(std::string _id, Expression _array_size = NULL) 
-			: id(_id), array_size(_array_size)
-			{}
-	
-};
-
-
-class MutableExpression : public Expression
-{
-private:
-	Mutable mut;
-	AssignOp op;
-	Expression expr;
-public:
-	MutableExpression(Mutable _mut, AssignOp _op, Expression _expr = NULL) // expr NULL when op is increment or decrement
-					: mut(_mut), op(_op), expr(_expr)
-					{}
-};
-
-class Expression // SimpleExpression and MutableExpression inherit from thuis as they can both be expressions
-{
-private:
-public:
-	Expression(){}
-	
+	Statement(){}
 };
 
 class ExpressionStmt : public Statement
 {
 private:
-	Expression expr;
+	Expression* expr;
 public:
 	ExpressionStmt(Expression _expr = NULL) : expr(_expr)
 	{}
 };
+
+class CompoundStmt : public Statement
+{
+private:
+	std::vector<Statement*> statements;
+public:
+	CompoundStmt(){}
+	
+	void add(Statement* statement)
+	{
+		statements.push_back(statement);
+	}
+};
+
+class IfStmt : public Statement
+{
+private:
+	SimpleExpression condition;
+	Statement if_body;
+	Statement else_body;
+public:
+	IfStmt(SimpleExpression _condition, Statement _if_body, Statement _else_body = NULL)
+		: condition(_condition), if_body(_if_body), else_body(_else_body) 
+		{}
+};
+
+class WhileStmt : public Statement
+{
+private:
+	SimpleExpression condition;
+	Statement body;
+public:
+	WhileStmt(SimpleExpression _condition, Statement _body) 
+			: condition(_condition), body(_body)
+			{}
+	
+	
+};
+
+class IterationStmt : public Statement
+{
+	
+};
+
+class ReturnStmt : public Statement
+{
+	
+};
+
+class BreakStmt : public Statement
+{
+	
+};
+
+
+
 
 #endif
