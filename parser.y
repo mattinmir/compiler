@@ -5,7 +5,7 @@
 	#include "ast_headers.hpp"
   	//#define YYDEBUG 1
   	using namespace std;
-	//extern Value *g_ast; // A way of getting the AST out
+	extern DeclarationList* root; // A way of getting the AST out
 	int yylex();
 	void yyerror(const char *);
 	
@@ -122,9 +122,8 @@
 
 %%
 
-
 declaration_list	: declaration_list declaration {$1->add($2); $$ = $1 }
-			| declaration {$$ = new DeclarationList(); $$->add($1); }
+			| declaration {$$ = new DeclarationList(); $$->add($1); root = $$; }
 			;
 
 declaration		: var_declarations {$$ = $1}
@@ -357,8 +356,10 @@ boolean			: TRUE {$$ = new Boolean(true);   }
 			;
 
 %%
+DeclarationList* root;
 int main() 
 {	
 	//yydebug = 1;
+	root->print(cout);
 	while(yyparse());
 }

@@ -30,8 +30,12 @@ public:
     {
     	decls.push_back(decl);
     }
-
-
+    
+    void print(std::ostream& dst) const
+    {	
+    	if (decls != NULL)
+    		dst << decls.size();
+    } 
 };
 
 
