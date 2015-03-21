@@ -24,7 +24,7 @@ private:
 	std::vector<Declaration*> decls;
 public:
 	DeclarationList()
-    {}
+	{}
 
     void add(Declaration* decl)
     {
@@ -33,8 +33,8 @@ public:
     
     void print(std::ostream& dst) const
     {	
-    	if (decls != NULL)
-    		dst << decls.size();
+    	
+    		dst << decls.size() << std::endl;
     } 
 };
 

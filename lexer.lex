@@ -95,7 +95,7 @@ int linenum = 0;
 [0-9]+          	{ yylval.primitive_int_t=atoi(yytext); return INT_VAL; }
 ["]([^"\\]|\\.)*["]     	{ yylval.primitive_string_t=yytext; return STRING_VAL; }
 [']([^'\\]|\\.)?[']		{ yylval.primitive_char_t= *yytext; return CHAR_VAL; }
-[_a-zA-Z][_a-zA-Z0-9]* 	{ return ID; }
+[_a-zA-Z][_a-zA-Z0-9]* 	{ yylval.primitive_string_t = yytext; return ID; }
 \n			{linenum++;}
 [ \t]			;
 %%
