@@ -21,7 +21,15 @@ private:
 	int array_size;
 public:
 	// If the variable has no array size, its array size starts as null by deafult
-	VarDeclId(std::string _id, int _array_size = NULL) : id(_id), array_size(_array_size) {}
+	VarDeclId(std::string _id, int _array_size = -1) : id(_id), array_size(_array_size) {}
+	
+	void print(std::ostream& stream)
+	{
+			stream << id;
+			
+			if (array_size != -1)
+				stream << "[" << array_size << "]";
+	}
 };
 
 class VarDeclInit : public Declaration
@@ -30,16 +38,35 @@ private:
 	VarDeclId* id;
 	SimpleExpression* value;
 public:
-	// If the variable has no initialisation, its value starts as null by deafult
+	// If the variable has no initialisation, its value starts as null by default
 	VarDeclInit(VarDeclId* _id, SimpleExpression* _value = NULL) : id(_id), value(_value) {}
+	
+	void print(std::ostream& stream)
+	{
+		id->print(stream);
+		//value->print(stream);
+	}
 };
 
 
-class VarDeclInitList :public DeclarationList
-{
+class VarDeclInitList : public DeclarationList
+{/*
 private:
+	std::vector<VarDeclInit*> decls;
 public:
 	VarDeclInitList() {}
+	
+	void add(VarDeclInit* decl)
+	{
+		decls.push_back(decl);
+		
+	}
+	
+	void print(std::ostream& stream)
+	{
+		for (unsigned i = 0; i < decls.size(); i++)
+			decls[i]->print(stream);
+	}*/
 };
 
 
@@ -51,6 +78,32 @@ private:
 	VarDeclInitList* var_decl_init_list;
 public:
 	VarDeclarations(TypeSpecifier _type_specifier) : type_specifier(_type_specifier) {}
+	
+	virtual void print(std::ostream& stream)
+	{
+			switch(type_specifier)
+			{
+			case TypeSpecifier::int_t:
+				stream << "int";
+				break;
+			case TypeSpecifier::float_t:
+				stream << "float";
+				break;
+			case TypeSpecifier::double_t:
+				stream << "double";
+				break;
+			case TypeSpecifier::char_t:
+				stream << "char";
+				break;
+			case TypeSpecifier::bool_t:
+				stream << "bool";
+				break;
+			}
+			stream << " ";
+			
+			//var_decl_init_list->print(stream);
+			stream << ";";
+	}
 };
 
 

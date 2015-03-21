@@ -144,7 +144,7 @@ var_decl_init_list	: var_decl_init_list COMMA var_decl_or_init {$1->add($3); $$ 
 			;
 
 var_decl_or_init	: var_decl_id ASSIGN simple_expression {$$ = new VarDeclInit($1, $3);}
-			| var_decl_id {$$ = new VarDeclInit($1);}
+			| var_decl_id {$$ = new VarDeclInit($1); $1->print(cout);}
 			;
 
 var_decl_id		: ID { $$ = new VarDeclId($1);}
@@ -362,6 +362,7 @@ DeclarationList* root;
 int main() 
 {	
 	//yydebug = 1;
-	root->print(cout);
+	
 	while(yyparse());
+	root->print(std::cout);
 }

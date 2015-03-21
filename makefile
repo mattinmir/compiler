@@ -2,7 +2,7 @@ all: parser.tab.cc lex.yy.cc
 	g++ -std=c++0x parser.tab.cc lex.yy.cc -o compiler
 
 scanner: lex.yy.cc
-	g++ -o scanner
+	g++ lex.yy.cc -o scanner
 
 lex.yy.cc: parser.tab.hh lexer.lex
 	flex -o lex.yy.cc lexer.lex

@@ -13,8 +13,7 @@ class Declaration
 private:
 
 public:
-
-
+	virtual void print(std::ostream& stream){}
 };
 
 
@@ -25,20 +24,19 @@ private:
 public:
 	DeclarationList()
 	{}
-
+	
     void add(Declaration* decl)
     {
     	decls.push_back(decl);
+    	
     }
     
-    void print(std::ostream& dst) const
-    {	
-    	
-    		dst << decls.size() << std::endl;
-    } 
+    void print(std::ostream& stream)
+    {
+    	for (unsigned i = 0; i < decls.size(); i++)
+    		decls[i]->print(stream);
+    }
+    
 };
-
-
-
 
 #endif /* DECLARATION_HPP */
