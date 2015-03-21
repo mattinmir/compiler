@@ -132,7 +132,7 @@ declaration		: var_declarations {$$ = $1;}
 			| fun_declaration {$$ = $1;}
 			;
 
-var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1); } // int x, y, z=1; 
+var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1);} // int x, y, z=1; 
 			;
 /*
 scoped_var_declaration	: scoped_type_specifier var_decl_init_list EOL
@@ -144,7 +144,7 @@ var_decl_init_list	: var_decl_init_list COMMA var_decl_or_init {$1->add($3); $$ 
 			;
 
 var_decl_or_init	: var_decl_id ASSIGN simple_expression {$$ = new VarDeclInit($1, $3);}
-			| var_decl_id {$$ = new VarDeclInit($1); $1->print(cout);}
+			| var_decl_id {$$ = new VarDeclInit($1);}
 			;
 
 var_decl_id		: ID { $$ = new VarDeclId($1);}

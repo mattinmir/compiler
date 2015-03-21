@@ -52,21 +52,24 @@ public:
 class VarDeclInitList : public DeclarationList
 {/*
 private:
-	std::vector<VarDeclInit*> decls;
+	std::vector<VarDeclInit*> vardeclinits;
 public:
 	VarDeclInitList() {}
 	
-	void add(VarDeclInit* decl)
+	void add(VarDeclInit* vardeclinit)
 	{
-		decls.push_back(decl);
+		vardeclinits.push_back(vardeclinit);
 		
 	}
 	
-	void print(std::ostream& stream)
+	virtual void print(std::ostream& stream)
 	{
-		for (unsigned i = 0; i < decls.size(); i++)
-			decls[i]->print(stream);
-	}*/
+		for (unsigned i = 0; i < vardeclinits.size(); i++)
+			vardeclinits[i]->print(stream);
+	}
+	*/
+public:
+	VarDeclInitList(){}
 };
 
 
@@ -100,9 +103,7 @@ public:
 				break;
 			}
 			stream << " ";
-			
-			//var_decl_init_list->print(stream);
-			stream << ";";
+			var_decl_init_list->print(stream);
 	}
 };
 

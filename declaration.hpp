@@ -19,7 +19,7 @@ public:
 
 class DeclarationList
 {
-private:
+protected:
 	std::vector<Declaration*> decls;
 public:
 	DeclarationList()
@@ -31,10 +31,12 @@ public:
     	
     }
     
-    void print(std::ostream& stream)
+    void print(std::ostream& stream) const
     {
     	for (unsigned i = 0; i < decls.size(); i++)
+    	{
     		decls[i]->print(stream);
+    	}
     }
     
 };
