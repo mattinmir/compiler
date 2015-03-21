@@ -103,7 +103,8 @@ public:
 				break;
 			}
 			stream << " ";
-			var_decl_init_list->print(stream);
+			if(var_decl_init_list != NULL){var_decl_init_list->print(stream);}
+			else{std::cout<<"missing vardeclinit " << std::endl; }
 	}
 };
 
