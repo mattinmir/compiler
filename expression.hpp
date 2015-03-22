@@ -4,6 +4,7 @@
 #include <string>
 #include "enums.hpp"
 #include "basics.hpp"
+#include "declaration.hpp"
 
 class Expression : public Immutable // SimpleExpression and MutableExpression inherit from this as they can both be expressions
 {

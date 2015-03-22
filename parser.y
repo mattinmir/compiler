@@ -1,7 +1,7 @@
 %code requires{	
 	#include <cstdio>
 	#include <iostream>
-	
+	#include <map>
 	#include "ast_headers.hpp"
   	//#define YYDEBUG 1
   	using namespace std;
@@ -364,5 +364,7 @@ int main()
 	//yydebug = 1;
 	
 	while(yyparse());
-	root->print(std::cout);
+	map<std::string, unsigned int> vars;
+	unsigned int reg;
+	root->arm(std::cout, vars, reg);
 }

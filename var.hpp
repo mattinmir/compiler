@@ -70,7 +70,8 @@ public:
 	{
 		id->arm(stream, vars, reg);
 		value->arm(stream, vars, reg);
-		stream << "STR R" << reg << "," << vars[id->get_id()]->second << std::endl;
+		stream << "STR R" << reg << ", " << vars[id->get_id()] << std::endl;
+		regs[reg] = false;
 	}
 };
 

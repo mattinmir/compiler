@@ -4,6 +4,7 @@
 #include "enums.hpp"
 #include "expression.hpp"
 #include "basics.hpp"
+#include "declaration.hpp"
 
 #include <vector>
 #include <iterator>
@@ -51,9 +52,13 @@ public:
 					stream << "-";
 					break;
 				}
-			}
-				
+			}				
 		}
+	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		terms[0]->arm(stream, vars, reg);
 	}
 };
 
@@ -99,6 +104,11 @@ public:
 		if (op != Relop::null)
 			right->print(stream);
 	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		left->arm(stream, vars, reg);
+	}
 };
 
 class UnaryRelExpression
@@ -120,6 +130,12 @@ public:
 			stream << "-";
 		rel_expr->print(stream);
 	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		rel_expr->arm(stream, vars, reg);
+	}
+	
 };
 
 
@@ -141,6 +157,13 @@ public:
 		for (it = unary_rel_exprs.begin(); it != unary_rel_exprs.end(); it++)
 			(*it)->print(stream);
 	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		std::vector<UnaryRelExpression*>::iterator it;
+		for (it = unary_rel_exprs.begin(); it != unary_rel_exprs.end(); it++)
+			(*it)->arm(stream, vars, reg);
+	}
 };
 
 class SimpleExpression : public Expression
@@ -161,6 +184,16 @@ public:
 		for (it = and_exprs.begin(); it != and_exprs.end(); it++)
 			(*it)->print(stream);
 	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		std::vector<AndExpression*>::iterator it;
+		for (it = and_exprs.begin(); it != and_exprs.end(); it++)
+			(*it)->arm(stream, vars, reg);
+		
+	}
+	
+	
 };
 
 

@@ -7,16 +7,19 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "declaration.hpp"
 #include "basics.hpp"
 
 class Constant : public Immutable
 {
 	virtual void print(std::ostream& stream) = 0;
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg) {}
 };
 
 class Number : public Constant
 {
 	virtual void print(std::ostream& stream) = 0;
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg) {}
 };
 
 class Int : public Number
@@ -31,6 +34,22 @@ public:
 	{
 		stream << val;
 	}
+	
+    void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+    {
+    	for (int i = 0; i < 13 ; i++)
+		{
+			if(!regs[i])
+			{
+				reg = i;
+				regs[i] = true;
+				break;
+			}
+		}
+    	stream << "MOV R" << reg << ", #" << val << std::endl;
+    	regs[reg] = false;
+    }
+	
 };
 
 class Double : public Number

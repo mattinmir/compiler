@@ -5,6 +5,7 @@
 #include "enums.hpp"
 #include "expression.hpp"
 #include "simple_expressions.hpp"
+#include "declaration.hpp"
 
 #include <vector>
 

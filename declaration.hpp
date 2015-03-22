@@ -5,9 +5,10 @@
 #include <iterator>
 #include <stdexcept>
 #include <iostream>
+#include <map>
 
 static bool regs[13]; // false = empty, true = full
-static address = 0;
+static unsigned int address = 0;
 
 class Declaration 
 {

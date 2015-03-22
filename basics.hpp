@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "enums.hpp"
+#include "declaration.hpp"
 
 class Factor
 {
@@ -17,11 +18,14 @@ public:
 		negated = !negated;
 	}
 	virtual void print(std::ostream& stream) = 0;
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg) {}
+	
 };
 
 class Immutable : public Factor
 {
 	virtual void print(std::ostream& stream) = 0;
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg) {}
 };
 
 
@@ -69,8 +73,12 @@ public:
 				
 				}
 			}
-				
 		}
+	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		factors[0]->arm(stream, vars, reg);
 	}
 };
 
