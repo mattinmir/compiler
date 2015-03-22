@@ -143,6 +143,7 @@ public:
 	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
 	{
 		var_decl_init_list->arm(stream, vars, reg);
+		
 	}
 };
 

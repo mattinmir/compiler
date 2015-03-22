@@ -24,6 +24,7 @@ public:
 
 class Immutable : public Factor
 {
+public:
 	virtual void print(std::ostream& stream) = 0;
 	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg) {}
 };

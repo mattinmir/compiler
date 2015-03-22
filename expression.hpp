@@ -109,6 +109,10 @@ private:
 public:
 	Call(std::string _func_id, ArgList* _args) : func_id(_func_id), args(_args){}
 	void print(std::ostream& stream)
-		{}
+	{
+		stream << func_id << "(";
+		args->print(stream);
+		stream << ");";
+	}
 };
 #endif

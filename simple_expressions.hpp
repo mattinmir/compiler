@@ -107,7 +107,9 @@ public:
 	
 	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
 	{
-		left->arm(stream, vars, reg);
+		unsigned int regl, regr;
+		left->arm(stream, vars, regl);
+		
 	}
 };
 

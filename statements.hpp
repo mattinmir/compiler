@@ -13,6 +13,7 @@ class Statement
 {
 public:
 	virtual void print(std::ostream& stream) = 0;
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg){}
 };
 
 class ExpressionStmt : public Statement
@@ -28,6 +29,10 @@ public:
 		if(expr != NULL)
 			expr->print(stream);
 		stream << ";";
+	}
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		expr->arm(stream, vars, reg);
 	}
 };
 
@@ -48,6 +53,13 @@ public:
 		std::vector<Statement*>::iterator it;
 		for (it = statements.begin(); it != statements.end(); it++)
 			(*it)->print(stream);
+	}
+	
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+    	std::vector<Statement*>::iterator it;
+		for (it = statements.begin(); it != statements.end(); it++)
+			(*it)->arm(stream, vars, reg);
 	}
 };
 
@@ -80,6 +92,11 @@ public:
 			stream << "}";
 		}
 	}
+	
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		
+	}
 };
 
 class WhileStmt : public Statement
@@ -99,6 +116,11 @@ public:
 		body->print(stream);
 		stream << "}";
 	}
+	
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		
+	}
 };
 
 class ReturnStmt : public Statement
@@ -114,6 +136,11 @@ public:
 		expr->print(stream);
 		stream << ";";
 	}
+	
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		
+	}
 };
 
 class BreakStmt : public Statement
@@ -124,6 +151,11 @@ public:
 	virtual void print(std::ostream& stream)
 	{
 		stream << "break;";
+	}
+	
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		
 	}
 };
 

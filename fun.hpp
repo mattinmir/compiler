@@ -25,6 +25,14 @@ public:
 		if(is_array)
 			stream << "[]";
 	}
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		if(vars.find(id) == vars.end())
+		{
+			vars[id] = address;
+			address += 4;
+		}
+	}	
 };
 
 class ParamIdDecl
@@ -61,6 +69,11 @@ public:
 		param_id->print(stream);
 		
 	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		param_id->arm(stream, vars, reg);
+	}
 };
 
 class ParamList
@@ -81,6 +94,12 @@ public:
 		std::vector<ParamIdDecl*>::iterator it;
 		for (it = param_id_decls.begin(); it != param_id_decls.end(); it++)
 			(*it)->print(stream);
+	}
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+    	std::vector<ParamIdDecl*>::iterator it;
+		for (it = param_id_decls.begin(); it != param_id_decls.end(); it++)
+			(*it)->arm(stream, vars, reg);
 	}
 };
 
@@ -122,6 +141,12 @@ public:
 		params->print(stream);
 		statement->print(stream);
 		
+	}
+	
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		if (statement != NULL)
+			statement->arm(stream, vars, reg);
 	}
 	
 };
