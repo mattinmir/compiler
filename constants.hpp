@@ -47,7 +47,7 @@ public:
 			}
 		}
     	stream << "MOV R" << reg << ", #" << val << std::endl;
-    	regs[reg] = false;
+    	
     }
 	
 };

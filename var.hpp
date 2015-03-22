@@ -70,8 +70,21 @@ public:
 	{
 		id->arm(stream, vars, reg);
 		value->arm(stream, vars, reg);
-		stream << "STR R" << reg << ", " << vars[id->get_id()] << std::endl;
+		regs[reg] = true;
+		unsigned int regaddr;
+		for (int i = 0; i < 13 ; i++)
+		{
+			if(!regs[i])
+			{
+				regaddr = i;
+				regs[i] = true;
+				break;
+			}
+		}
+		stream << "MOV R" << regaddr << ", #" << vars[id->get_id()] << std::endl;
+		stream << "STR R" << reg << ", [R" << regaddr << "]" << std::endl;
 		regs[reg] = false;
+		regs[regaddr] = false;
 	}
 };
 

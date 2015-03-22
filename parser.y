@@ -7,6 +7,7 @@
 	#include "ast_headers.hpp"
   	using namespace std;
 	extern DeclarationList* root; 
+	extern FILE* yyin;
 	int yylex();
 	void yyerror(const char *);
 	
@@ -308,18 +309,16 @@ int main(int argc, char *argv[])
 		cout << "Wrong number of parameters" << endl;
 		exit(EXIT_FAILURE);
 	}	
-	else if(argv[1] != "-S" || argv[2] != "-o")
-	{
-		cout << "Invalid options" << endl;
-		exit(EXIT_FAILURE);
-	}	
-	ifstream infile;
-	infile.open(argv[4]);
-	ofstream outfile;
-
 	
+	FILE* infile;
+	infile = fopen(argv[4], "r");
+	yyin = infile;
+
+
 	while(yyparse());
 	map<std::string, unsigned int> vars;
 	unsigned int reg;
-	root->arm(std::cout, vars, reg);
+	ofstream outfile;
+	outfile.open(argv[3]);
+	root->arm(outfile, vars, reg);
 }
