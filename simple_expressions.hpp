@@ -6,7 +6,7 @@
 #include "basics.hpp"
 
 #include <vector>
-#include <map>
+#include <iterator>
 #include <stdexcept>
 #include <iostream>
 
@@ -31,7 +31,30 @@ public:
 	{
 		ops.push_back(op);
 	}
-	
+	void print(std::ostream& stream)
+	{
+		std::vector<Term*>::iterator term_it;
+		std::vector<Sumop>::iterator op_it;
+		for (term_it = terms.begin(), op_it = ops.begin(); term_it != terms.end(); term_it++, op_it++)
+		{
+			(*term_it)->print(stream);
+			if(op_it != ops.end())
+			{
+				switch(*op_it)
+				{
+				case Sumop::null:
+					break;
+				case Sumop::add:
+					stream << "+";
+					break;
+				case Sumop::sub:
+					stream << "-";
+					break;
+				}
+			}
+				
+		}
+	}
 };
 
 
@@ -44,6 +67,38 @@ private:
 public:
 	RelExpression(SumExpression* _left, Relop _op = Relop::null, SumExpression* _right = NULL)
 				: left(_left), op(_op), right(_right) {}
+	
+	void print(std::ostream& stream)
+	{		
+		left->print(stream);
+		
+		switch(op)
+		{
+		case Relop::null:
+			break;
+		case Relop::lt_equal_to:
+			stream << "<=";
+			break;
+		case Relop::less_than:
+			stream << "<";
+			break;
+		case Relop::greater_than:
+			stream << ">";
+			break;
+		case Relop::gt_equal_to:
+			stream << ">=";
+			break;
+		case Relop::equal_to:
+			stream << "==";
+			break;
+		case Relop::not_equal_to:
+			stream << "!=";
+			break;
+		}
+		
+		if (op != Relop::null)
+			right->print(stream);
+	}
 };
 
 class UnaryRelExpression
@@ -57,6 +112,13 @@ public:
 	void logical_not()
 	{
 		negated = !negated;
+	}
+	
+	void print(std::ostream& stream)
+	{
+		if(negated)
+			stream << "-";
+		rel_expr->print(stream);
 	}
 };
 
@@ -72,6 +134,13 @@ public:
 	{
 		unary_rel_exprs.push_back(unary_rel_expr);
 	}
+	
+	void print(std::ostream& stream)
+	{
+		std::vector<UnaryRelExpression*>::iterator it;
+		for (it = unary_rel_exprs.begin(); it != unary_rel_exprs.end(); it++)
+			(*it)->print(stream);
+	}
 };
 
 class SimpleExpression : public Expression
@@ -84,6 +153,13 @@ public:
 	void add(AndExpression* and_expr)
 	{
 		and_exprs.push_back(and_expr);
+	}
+	
+	void print(std::ostream& stream)
+	{
+		std::vector<AndExpression*>::iterator it;
+		for (it = and_exprs.begin(); it != and_exprs.end(); it++)
+			(*it)->print(stream);
 	}
 };
 

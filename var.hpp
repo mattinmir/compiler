@@ -17,15 +17,17 @@ class VarDeclId
 {
 private:
 	std::string id;
-
+	int array_size;
 public:
 	// If the variable has no array size, its array size starts as null by deafult
-	VarDeclId(std::string _id) : id(_id) {}
-
+	VarDeclId(std::string _id, int _array_size = -1) : id(_id), array_size(_array_size) {}
 	
 	void print(std::ostream& stream)
 	{
-			stream << "hello"; // id;
+			stream << id;
+			
+			if (array_size != -1)
+				stream << "[" << array_size << "]";
 	}
 };
 
@@ -41,18 +43,15 @@ public:
 	
 	void print(std::ostream& stream)
 	{
-		if(id != NULL)
-		{
-			id->print(stream);
-		}
-		//value->print(stream);
+		id->print(stream);
+		if(value != NULL)
+			value->print(stream);
 	}
 };
 
 
-
-class VarDeclInitList //: public DeclarationList
-{
+class VarDeclInitList : public DeclarationList
+{/*
 private:
 	std::vector<VarDeclInit*> vardeclinits;
 public:
@@ -60,47 +59,34 @@ public:
 	void add(VarDeclInit* vardeclinit)
 	{
 		vardeclinits.push_back(vardeclinit);
-		std::cout << "added to list, Size is " << vardeclinits.size() << std::endl;
 		
 	}
 	
 	void print(std::ostream& stream)
 	{
 		std::cout << "printing VarDeclList" << std::endl;
-
-		for (int i = 0; i < vardeclinits.size(); i++)
-		{
-			std::cout << "got past it" << std::endl;
-			if(vardeclinits[i] == NULL)
-			{
-				std::cout << "vardecl is null" << std::endl;
-			}
-				vardeclinits[i]->print(stream);
-		}
-
-
-		/*std::vector<VarDeclInit*>::iterator it;
+		std::vector<VarDeclInit*>::iterator it;
 		for (it = vardeclinits.begin(); it != vardeclinits.end(); it++)
 		{
 			std::cout << *it << std::endl;
 			(*it)->print(stream);
-		}*/
+		}
 	}
 	
 public:
-	VarDeclInitList(){}
+	VarDeclInitList(){}*/
 };
 
 
 
 
-class VarDeclarations :  public Declaration
+class VarDeclarations :  public Declaration, public Statement
 {
 private:
 	TypeSpecifier type_specifier;
 	VarDeclInitList* var_decl_init_list;
 public:
-	VarDeclarations(TypeSpecifier _type_specifier) : type_specifier(_type_specifier) {}
+	VarDeclarations(TypeSpecifier _type_specifier, VarDeclInitList* _var_decl_init_list) : type_specifier(_type_specifier), var_decl_init_list(_var_decl_init_list) {}
 	
 	virtual void print(std::ostream& stream)
 	{
@@ -123,25 +109,11 @@ public:
 				break;
 			}
 			stream << " ";
-			if(var_decl_init_list == NULL)
-				var_decl_init_list->print(stream);
-			
+			var_decl_init_list->print(stream);
+			stream << "" << std::endl;
+
 	}
 };
 
-
-class LocalDeclarations : public Statement
-{
-private:
-	VarDeclarations* var_declaration;
-public:
-	LocalDeclarations(VarDeclarations* _var_declaration) : var_declaration(_var_declaration){}
-
-	void print(std::ostream& stream)
-	{
-		if(var_declaration != NULL)
-			var_declaration->print(stream);
-	}
-};
 
 #endif

@@ -11,12 +11,12 @@
 
 class Constant : public Immutable
 {
-	
+	virtual void print(std::ostream& stream) = 0;
 };
 
 class Number : public Constant
 {
-	
+	virtual void print(std::ostream& stream) = 0;
 };
 
 class Int : public Number
@@ -27,9 +27,9 @@ public:
 	Int(int _val) : val(_val)
 	{}
 	
-	void print(std::ostream& dst) const
+	void print(std::ostream& stream) 
 	{
-		dst << val;
+		stream << val;
 	}
 };
 
@@ -41,9 +41,9 @@ public:
 	Double(double _val) : val(_val)
 	{}
 	
-	void print(std::ostream& dst) const
+	void print(std::ostream& stream) 
 	{
-		dst << val;
+		stream << val;
 	}
 };
 
@@ -55,9 +55,9 @@ public:
 	Char(char _val) : val(_val)
 	{}
 	
-	void print(std::ostream& dst) const
+	void print(std::ostream& stream) 
 	{
-		dst << val;
+		stream << val;
 	}
 };
 
@@ -69,9 +69,18 @@ public:
 	Boolean(bool _val) : val(_val)
 	{}
 	
-	void print(std::ostream& dst) const
-	{
-		dst << val;
+	void print(std::ostream& stream) 
+	{	
+		switch(val)
+		{
+		case true:
+			stream << "true";
+			break;
+		case false:
+			stream << "false";
+			break;
+		}
+		
 	}
 };
 
@@ -83,9 +92,9 @@ public:
 	String(std::string _val) : val(_val)
 	{}
 	
-	void print(std::ostream& dst) const
+	void print(std::ostream& stream) 
 	{
-		dst << val;
+		stream << val;
 	}
 };
 

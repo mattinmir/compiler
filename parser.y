@@ -60,15 +60,14 @@
 	FunDeclaration* fun_declaration_t;
 	VarDeclarations* var_declarations_t;
 	String* string_t;
-	LocalDeclarations* local_declarations_t;
 }
 
 %token ADD ADD_ASSIGN ASSIGN AUTO BITWISE_AND BITWISE_AND_ASSIGN BITWISE_NOT BITWISE_OR BITWISE_OR_ASSIGN BITWISE_XOR BITWISE_XOR_ASSIGN BOOL BREAK CASE CHAR COLON COMMA CONST CONTINUE DECREMENT DEFAULT DIV DIV_ASSIGN DO DOUBLE ELLIPSIS ELSE ENUM EOL EQUAL_TO EXTERN FALSE FLOAT FOR GOTO GT_EQUAL_TO IF INCREMENT INT LBRACE LOGICAL_AND LOGICAL_NOT LOGICAL_OR LONG LPAREN LSQUARE LT_EQUAL_TO MODULO MODULO_ASSIGN MUL MUL_ASSIGN NOT_EQUAL_TO RBRACE REGISTER RETURN RPAREN RSQUARE SHORT SIGNED SIZEOF STATIC STRUCT SUB SUB_ASSIGN SWITCH TERNARY TRUE TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
 
 %token <primitive_int_t> INT_VAL 
 %token <primitive_double_t> DOUBLE_VAL 
-%token <primitive_string_t> STRING_VAL ID
-%token <primitive_char_t> CHAR_VAL
+%token <primitive_string_t> STRING_VAL ID CHAR_VAL
+//%token <primitive_char_t> 
 
 
 %type <primitive_bool_t> TRUE FALSE
@@ -109,7 +108,7 @@
 %type <term_t> term
 %type <factor_t> factor
 %type <immutable_t> immutable
-%type <local_declarations_t> local_declarations
+
 
 //%type <string_t>   INT FLOAT DOUBLE CHAR LONG SHORT UNSIGNED BOOL
 //%type <value_t> constant number boolean
@@ -133,7 +132,7 @@ declaration		: var_declarations {$$ = $1; }
 			| fun_declaration {$$ = $1;}
 			;
 
-var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1); } // int x, y, z=1; 
+var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1, $2); } // int x, y, z=1; 
 			;
 /*
 scoped_var_declaration	: scoped_type_specifier var_decl_init_list EOL
@@ -149,6 +148,7 @@ var_decl_or_init	: var_decl_id ASSIGN simple_expression {$$ = new VarDeclInit($1
 			;
 
 var_decl_id		: ID { $$ = new VarDeclId($1); }
+			| ID LSQUARE INT_VAL RSQUARE { $$ = new VarDeclId($1, $3);}
 			;
 /*
 			// modifier_list can be empty, so this means they are optional on either side of the type_specifier
@@ -229,8 +229,8 @@ statement		: expression_stmt {$$ = $1;}
 			| while_stmt {$$ = $1;}
 			| return_stmt {$$ = $1;}
 			| break_stmt {$$ = $1;}
-			| local_declarations {$$ = $1;}
-			//| var_declarations {$$ = $1;}
+			//| local_declarations
+			| var_declarations {$$ = $1;}
 			;
 
 expression_stmt		: expression EOL {$$ = new ExpressionStmt($1);}
@@ -239,10 +239,11 @@ expression_stmt		: expression EOL {$$ = new ExpressionStmt($1);}
 
 compound_stmt		: LBRACE statement_list RBRACE {$$ = $2;}// int x; float y; ... statements
 			;
-
-local_declarations	: var_declarations {$$ = new LocalDeclarations($1);}
+/*
+local_declarations	: var_declarations
+			// | scoped_var_declaration
 			;
-
+*/
 //****************************************************************************************************************
 // sort out instantiatition of new compund stmt
 statement_list		: /*Empty*/ {$$ = new CompoundStmt();}
@@ -344,7 +345,7 @@ arg_list		: arg_list COMMA expression {$1->add($3); $$ = $1;}
 
 constant		: number {$$ = $1;}
 			| boolean {$$ = $1;}
-			| CHAR_VAL {$$ = new Char($1);}
+			| CHAR_VAL {$$ = new Char($1[1]);} // char val is 'x' so use [1] to get x
 			| STRING_VAL {$$ = new String($1);}
 			;
 

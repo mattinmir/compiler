@@ -7,7 +7,7 @@
 
 class Factor
 {
-private:
+protected:
 	bool negated; // true if factor should be negated
 public:
 	Factor() : negated(false){}
@@ -16,11 +16,12 @@ public:
 	{
 		negated = !negated;
 	}
+	virtual void print(std::ostream& stream) = 0;
 };
 
 class Immutable : public Factor
 {
-	
+	virtual void print(std::ostream& stream) = 0;
 };
 
 
@@ -41,6 +42,35 @@ public:
 	void add_op(Mulop op)
 	{
 		ops.push_back(op);
+	}
+	
+	void print(std::ostream& stream)
+	{
+		std::vector<Factor*>::iterator factor_it;
+		std::vector<Mulop>::iterator op_it;
+		for (factor_it = factors.begin(), op_it = ops.begin(); factor_it != factors.end(); factor_it++, op_it++)
+		{
+			(*factor_it)->print(stream);
+			if(op_it != ops.end())
+			{
+				switch(*op_it)
+				{
+				case Mulop::null:
+					break;
+				case Mulop::mul:
+					stream << "*";
+					break;
+				case Mulop::div:
+					stream << "/";
+					break;
+				case Mulop::modulo:
+					stream << "%";
+					break;
+				
+				}
+			}
+				
+		}
 	}
 };
 
