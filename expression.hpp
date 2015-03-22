@@ -126,10 +126,11 @@ public:
 	
 	 void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
 	 {
+
 		mut->arm(stream, vars, reg);
 		unsigned int mutreg = reg;
 		regs[mutreg] = true;
-		
+
 		expr->arm(stream, vars, reg);
 		unsigned int exprreg = reg;
 		regs[exprreg] = true;
@@ -151,7 +152,7 @@ public:
 		case AssignOp::null:
 			break;
 		case AssignOp::assign:
-			stream << "MOV R" << mutreg << ", R" << exprreg << std::endl << "STR R" << mutreg << ", [R" << exprreg << "]" << std::endl;
+			stream << "MOV R" << mutreg << ", R" << exprreg << std::endl << "STR R" << mutreg << ", [R" << regaddr << "]" << std::endl;
 			break;
 		case AssignOp::add_assign: 
 			stream << "ADD R" << mutreg << ", R" << mutreg << ", R" << exprreg << std::endl << "STR R" << mutreg << ", [R" << regaddr << "]" << std::endl;

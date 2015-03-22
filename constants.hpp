@@ -37,7 +37,8 @@ public:
 	
     void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
     {
-    	for (int i = 0; i < 13 ; i++)
+    	
+		for (int i = 0; i < 13 ; i++)
 		{
 			if(!regs[i])
 			{
