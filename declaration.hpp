@@ -1,19 +1,21 @@
 #ifndef DECLARATION_HPP
 #define DECLARATION_HPP
 
-
-
 #include <vector>
 #include <iterator>
 #include <stdexcept>
 #include <iostream>
+
+static bool regs[13]; // false = empty, true = full
+static address = 0;
 
 class Declaration 
 {
 public:
 	Declaration(){}
 
-	virtual void print(std::ostream& stream){}
+	virtual void print(std::ostream& stream) {}
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg){}
 };
 
 
@@ -35,6 +37,13 @@ public:
     	std::vector<Declaration*>::iterator it;
 		for (it = decls.begin(); it != decls.end(); it++)
 			(*it)->print(stream);
+    }
+    
+    void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+    {
+    	std::vector<Declaration*>::iterator it;
+		for (it = decls.begin(); it != decls.end(); it++)
+			(*it)->arm(stream, vars, reg);
     }
     
 };

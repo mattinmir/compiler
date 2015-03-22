@@ -9,8 +9,9 @@
 #include <vector>
 #include <iterator>
 #include <iostream>
-
-
+#include <cstdlib>
+#include <map>
+#include <string>
 
 
 class VarDeclId
@@ -29,6 +30,24 @@ public:
 			if (array_size != -1)
 				stream << "[" << array_size << "]";
 	}
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		if(vars.find(id) != vars.end())
+		{
+			std::cout << "Error: redeclaration of " << id << std::endl;  
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			vars[id] = address;
+			address += 4;
+		}
+	}
+	
+	std::string get_id()
+	{
+		return id;
+	}
 };
 
 class VarDeclInit : public Declaration
@@ -46,6 +65,12 @@ public:
 		id->print(stream);
 		if(value != NULL)
 			value->print(stream);
+	}
+	void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		id->arm(stream, vars, reg);
+		value->arm(stream, vars, reg);
+		stream << "STR R" << reg << "," << vars[id->get_id()]->second << std::endl;
 	}
 };
 
@@ -112,6 +137,11 @@ public:
 			var_decl_init_list->print(stream);
 			stream << "" << std::endl;
 
+	}
+	
+	virtual void arm(std::ostream& stream, std::map<std::string, unsigned int> &vars, unsigned int &reg)
+	{
+		var_decl_init_list->arm(stream, vars, reg);
 	}
 };
 
