@@ -17,17 +17,15 @@ class VarDeclId
 {
 private:
 	std::string id;
-	int array_size;
+
 public:
 	// If the variable has no array size, its array size starts as null by deafult
-	VarDeclId(std::string _id, int _array_size = -1) : id(_id), array_size(_array_size) {}
+	VarDeclId(std::string _id) : id(_id) {}
+
 	
 	void print(std::ostream& stream)
 	{
-			stream << id;
-			
-			if (array_size != -1)
-				stream << "[" << array_size << "]";
+			stream << "hello"; // id;
 	}
 };
 
@@ -43,10 +41,14 @@ public:
 	
 	void print(std::ostream& stream)
 	{
-		id->print(stream);
+		if(id != NULL)
+		{
+			id->print(stream);
+		}
 		//value->print(stream);
 	}
 };
+
 
 
 class VarDeclInitList //: public DeclarationList
@@ -58,18 +60,31 @@ public:
 	void add(VarDeclInit* vardeclinit)
 	{
 		vardeclinits.push_back(vardeclinit);
+		std::cout << "added to list, Size is " << vardeclinits.size() << std::endl;
 		
 	}
 	
 	void print(std::ostream& stream)
 	{
 		std::cout << "printing VarDeclList" << std::endl;
-		std::vector<VarDeclInit*>::iterator it;
+
+		for (int i = 0; i < vardeclinits.size(); i++)
+		{
+			std::cout << "got past it" << std::endl;
+			if(vardeclinits[i] == NULL)
+			{
+				std::cout << "vardecl is null" << std::endl;
+			}
+				vardeclinits[i]->print(stream);
+		}
+
+
+		/*std::vector<VarDeclInit*>::iterator it;
 		for (it = vardeclinits.begin(); it != vardeclinits.end(); it++)
 		{
 			std::cout << *it << std::endl;
 			(*it)->print(stream);
-		}
+		}*/
 	}
 	
 public:
@@ -79,7 +94,7 @@ public:
 
 
 
-class VarDeclarations :  public Declaration, public Statement
+class VarDeclarations :  public Declaration
 {
 private:
 	TypeSpecifier type_specifier;
@@ -108,12 +123,25 @@ public:
 				break;
 			}
 			stream << " ";
-			//if(var_decl_init_list != NULL)
+			if(var_decl_init_list == NULL)
 				var_decl_init_list->print(stream);
-			/*else
-				std::cout<<"missing vardeclinit " << std::endl; */
+			
 	}
 };
 
+
+class LocalDeclarations : public Statement
+{
+private:
+	VarDeclarations* var_declaration;
+public:
+	LocalDeclarations(VarDeclarations* _var_declaration) : var_declaration(_var_declaration){}
+
+	void print(std::ostream& stream)
+	{
+		if(var_declaration != NULL)
+			var_declaration->print(stream);
+	}
+};
 
 #endif
