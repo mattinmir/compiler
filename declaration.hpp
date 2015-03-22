@@ -4,15 +4,15 @@
 
 
 #include <vector>
-#include <map>
+#include <iterator>
 #include <stdexcept>
 #include <iostream>
 
 class Declaration 
 {
-private:
-
 public:
+	Declaration(){}
+
 	virtual void print(std::ostream& stream){}
 };
 
@@ -28,15 +28,13 @@ public:
     void add(Declaration* decl)
     {
     	decls.push_back(decl);
-    	
     }
     
-    void print(std::ostream& stream) const
+    void print(std::ostream& stream) 
     {
-    	for (unsigned i = 0; i < decls.size(); i++)
-    	{
-    		decls[i]->print(stream);
-    	}
+    	std::vector<Declaration*>::iterator it;
+		for (it = decls.begin(); it != decls.end(); it++)
+			(*it)->print(stream);
     }
     
 };

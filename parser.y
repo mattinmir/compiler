@@ -128,11 +128,11 @@ declaration_list	: declaration_list declaration {$1->add($2); $$ = $1; }
 			| declaration {$$ = new DeclarationList(); $$->add($1); root = $$; }
 			;
 
-declaration		: var_declarations {$$ = $1;}
+declaration		: var_declarations {$$ = $1; }
 			| fun_declaration {$$ = $1;}
 			;
 
-var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1);} // int x, y, z=1; 
+var_declarations	: type_specifier var_decl_init_list EOL {$$ = new VarDeclarations($1); } // int x, y, z=1; 
 			;
 /*
 scoped_var_declaration	: scoped_type_specifier var_decl_init_list EOL
@@ -140,14 +140,14 @@ scoped_var_declaration	: scoped_type_specifier var_decl_init_list EOL
 */
 
 var_decl_init_list	: var_decl_init_list COMMA var_decl_or_init {$1->add($3); $$ = $1;}
-			| var_decl_or_init {$$ = new VarDeclInitList(); $$->add($1);}
+			| var_decl_or_init {$$ = new VarDeclInitList(); $$->add($1); }
 			;
 
 var_decl_or_init	: var_decl_id ASSIGN simple_expression {$$ = new VarDeclInit($1, $3);}
 			| var_decl_id {$$ = new VarDeclInit($1);}
 			;
 
-var_decl_id		: ID { $$ = new VarDeclId($1);}
+var_decl_id		: ID { $$ = new VarDeclId($1); }
 			| ID LSQUARE INT_VAL RSQUARE { $$ = new VarDeclId($1, $3);}
 			;
 /*
@@ -364,5 +364,5 @@ int main()
 	//yydebug = 1;
 	
 	while(yyparse());
-	root->print(std::cout);
+	//root->print(std::cout);
 }

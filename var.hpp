@@ -7,8 +7,7 @@
 #include "statements.hpp"
 
 #include <vector>
-#include <map>
-#include <stdexcept>
+#include <iterator>
 #include <iostream>
 
 
@@ -38,8 +37,9 @@ private:
 	VarDeclId* id;
 	SimpleExpression* value;
 public:
-	// If the variable has no initialisation, its value starts as null by default
-	VarDeclInit(VarDeclId* _id, SimpleExpression* _value = NULL) : id(_id), value(_value) {}
+
+	VarDeclInit(VarDeclId* _id) : id(_id) {}
+	VarDeclInit(VarDeclId* _id, SimpleExpression* _value) : id(_id), value(_value) {}
 	
 	void print(std::ostream& stream)
 	{
@@ -49,12 +49,11 @@ public:
 };
 
 
-class VarDeclInitList : public DeclarationList
-{/*
+class VarDeclInitList //: public DeclarationList
+{
 private:
 	std::vector<VarDeclInit*> vardeclinits;
 public:
-	VarDeclInitList() {}
 	
 	void add(VarDeclInit* vardeclinit)
 	{
@@ -62,15 +61,21 @@ public:
 		
 	}
 	
-	virtual void print(std::ostream& stream)
+	void print(std::ostream& stream)
 	{
-		for (unsigned i = 0; i < vardeclinits.size(); i++)
-			vardeclinits[i]->print(stream);
+		std::cout << "printing VarDeclList" << std::endl;
+		std::vector<VarDeclInit*>::iterator it;
+		for (it = vardeclinits.begin(); it != vardeclinits.end(); it++)
+		{
+			std::cout << *it << std::endl;
+			(*it)->print(stream);
+		}
 	}
-	*/
+	
 public:
 	VarDeclInitList(){}
 };
+
 
 
 
@@ -103,8 +108,10 @@ public:
 				break;
 			}
 			stream << " ";
-			if(var_decl_init_list != NULL){var_decl_init_list->print(stream);}
-			else{std::cout<<"missing vardeclinit " << std::endl; }
+			//if(var_decl_init_list != NULL)
+				var_decl_init_list->print(stream);
+			/*else
+				std::cout<<"missing vardeclinit " << std::endl; */
 	}
 };
 
