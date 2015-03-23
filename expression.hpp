@@ -146,7 +146,6 @@ public:
 			}
 		}
 		stream << "MOV R" << regaddr << ", #" << vars[mut->get_id()] << std::endl;
-		std::cout << regaddr << exprreg << mutreg << reg <<std::endl;
 		switch(op)
 		{
 		case AssignOp::null:
